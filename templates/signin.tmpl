@@ -2,15 +2,14 @@
 {{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
 <div class="page-title"> Bloat </div>
 <div class="signin-desc">
-	A web client for <a href="https://pleroma.social" target="_blank">Mastodon Network</a>.
+	An excellent web client from <a target="_blank" href="https://git.freesoftwareextremist.com/bloat">Free<em>Software</em>Extremist</a>, hosted by <a target="_blank" href="https://freespeechextremist.com/">Free<em>Speech</em>Extremist</a>.
 </div>
 
 <form class="signin-form" action="/signin" method="post">
-	Enter the domain name of your instance to continue
+	<p>Enter the domain name of your instance to authorize Bloat.  (If you are here, the default is probably correct.)</p>
+	<input type="text" name="instance" value="freespeechextremist.com" required>
 	<br/>
-	<input type="text" name="instance" placeholder="example.com" required>
-	<br/>
-	<button type="submit"> Signin </button>
+	<button type="submit">Sign in</button>
 </form>
 
 <p>
