@@ -5,6 +5,9 @@
 		<a class="img-link" href="/user/{{.Account.ID}}">
 			<img class="status-profile-img" src="{{.Account.AvatarStatic}}" alt="avatar" />
 		</a>
+		<a class="nav-link" href="/user/{{.Account.ID}}">
+			<span class="status-uname"> {{.Account.Acct}} </span>
+		</a>
 		<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span>  
 		retweeted
 	</div>
