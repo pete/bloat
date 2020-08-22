@@ -2,6 +2,7 @@
 	margin: 12px 0 12px -4px;
 	padding: 4px;
 	border-left: 4px solid transparent;
+	background-color: rgba(0,0,0,0.05);
 }
 
 .status-container-container:target {
