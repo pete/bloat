@@ -4,12 +4,12 @@
 	border-left: 4px solid transparent;
 }
 
-.status-container-container:nth-child(2n) {
+.status-container-container:nth-child(2n), .notification-container:nth-child(2n+1) {
 	background-color: rgba(0,0,0,0.05);
 }
 
-.status-container-container:nth-child(2n+1) {
-	background-color: rgba(255,255,255,0.05);
+.status-container-container:nth-child(2n+1), .notification-container:nth-child(2n+1) {
+	background-color: rgba(255,255,255,0.1);
 }
 
 .status-container-container:target {
