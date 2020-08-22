@@ -504,7 +504,7 @@ body {
 	color: #eaeaea;
 }
 
-.dark a {
+.dark a, .dark .status-uname {
 	color: #81a2be;
 }
 
