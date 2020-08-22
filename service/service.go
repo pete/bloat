@@ -14,7 +14,7 @@ import (
 	"bloat/util"
 )
 
-const notificationSz = 100
+const notificationSz = 50
 
 var (
 	ctx                = context.Background()
