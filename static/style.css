@@ -2,7 +2,14 @@
 	margin: 12px 0 12px -4px;
 	padding: 4px;
 	border-left: 4px solid transparent;
+}
+
+.status-container-container:nth-child(2n) {
 	background-color: rgba(0,0,0,0.05);
+}
+
+.status-container-container:nth-child(2n+1) {
+	background-color: rgba(255,255,255,0.05);
 }
 
 .status-container-container:target {
