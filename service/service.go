@@ -14,6 +14,8 @@ import (
 	"bloat/util"
 )
 
+const notificationSz = 100
+
 var (
 	ctx                = context.Background()
 	errInvalidArgument = errors.New("invalid argument")
@@ -405,7 +407,7 @@ func (svc *service) ServeNotificationPage(c *model.Client, maxID string,
 	var pg = mastodon.Pagination{
 		MaxID: maxID,
 		MinID: minID,
-		Limit: 20,
+		Limit: notificationSz,
 	}
 
 	notifications, err := c.GetNotifications(ctx, &pg)
@@ -423,7 +425,7 @@ func (svc *service) ServeNotificationPage(c *model.Client, maxID string,
 		readID = notifications[0].ID
 	}
 
-	if len(notifications) == 20 && len(pg.MaxID) > 0 {
+	if len(notifications) == notificationSz && len(pg.MaxID) > 0 {
 		nextLink = "/notifications?max_id=" + pg.MaxID
 	}
 
