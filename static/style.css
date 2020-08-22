@@ -57,13 +57,12 @@
 }
 
 .status-dname {
-	font-weight: 800;
+	font-style: italic;
+	font-size: 0.8em;
 }
 
 .status-uname {
 	user-select: all;
-	font-style: italic;
-	font-size: 10pt;
 }
 
 .name-emoji {

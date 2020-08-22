@@ -25,6 +25,9 @@
 		</div>
 		<div>
 			<div class="notification-info-text">
+				<a class="nav-link" href="/user/{{.User.ID}}">
+					<span class="status-uname"> {{.User.Acct}} </span>
+				</a>
 				<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span>  
 				<span> followed you </span>
 				<span>
@@ -45,6 +48,9 @@
 		<a class="img-link" href="/user/{{.Account.ID}}">
 			<img class="status-profile-img" src="{{.Account.AvatarStatic}}" alt="avatar" />
 		</a>
+		<a class="nav-link" href="/user/{{.User.ID}}">
+			<span class="status-uname"> {{.User.Acct}} </span>
+		</a>
 		<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span>  
 		<span> retweeted your post </span>
 		<span>
@@ -57,6 +63,9 @@
 	<div class="retweet-info">
 		<a class="img-link" href="/user/{{.Account.ID}}">
 			<img class="status-profile-img" src="{{.Account.AvatarStatic}}" alt="avatar" />
+		</a>
+		<a class="nav-link" href="/user/{{.User.ID}}">
+			<span class="status-uname"> {{.User.Acct}} </span>
 		</a>
 		<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span>  
 		<span> liked your post </span>

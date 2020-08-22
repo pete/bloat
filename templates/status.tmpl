@@ -20,10 +20,10 @@
 		</div>
 		<div class="status"> 
 			<div class="status-name">
-				<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span> 
 				<a href="/user/{{.Account.ID}}">
 					<span class="status-uname"> {{.Account.Acct}} </span>
 				</a>
+				<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span> 
 				<div class="more-container">
 					<div class="remote-link">
 						{{if .IDNumbers}}#{{index .IDNumbers .ID}}{{end}} {{.Visibility}}
