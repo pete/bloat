@@ -156,6 +156,10 @@
 	margin: 0 8px;
 }
 
+.notification-container .retweet-info {
+	opacity: 0.8;
+}
+
 .notification-container {
 	margin: 16px 0 16px -4px;
 	padding: 0 4px;
