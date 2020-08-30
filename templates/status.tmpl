@@ -1,5 +1,5 @@
 {{with .Data}}
-<div id="status-{{.ID}}" class="status-container-container">
+<div id="status-{{.ID}}" class="status-container-container {{(StatusColor .Account.Acct)}}">
 	{{if .Reblog}}
 	<div class="retweet-info">
 		<a class="img-link" href="/user/{{.Account.ID}}">

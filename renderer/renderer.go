@@ -67,6 +67,18 @@ func statusContentFilter(spoiler string, content string,
 	return strings.NewReplacer(replacements...).Replace(content)
 }
 
+func statusColor(acct string) string {
+	a, b := byte(0), byte(0)
+	for i := 0; i < len(acct); i++ {
+		if acct[i] == '@' {
+			a, b = b, a
+		} else {
+			a = (a + acct[i]) % 16
+		}
+	}
+	return fmt.Sprintf("status-color-%x%x", a, b)
+}
+
 func displayInteractionCount(c int64) string {
 	if c > 0 {
 		return strconv.Itoa(int(c))
@@ -140,6 +152,7 @@ func NewRenderer(templateGlobPattern string) (r *renderer, err error) {
 	t, err = t.Funcs(template.FuncMap{
 		"EmojiFilter":             emojiFilter,
 		"StatusContentFilter":     statusContentFilter,
+		"StatusColor":             statusColor,
 		"DisplayInteractionCount": displayInteractionCount,
 		"TimeSince":               timeSince,
 		"TimeUntil":               timeUntil,
