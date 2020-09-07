@@ -162,6 +162,11 @@
 	border-color: #777777;
 }
 
+.notification-container.favourite .status-container, .notification-container.reblog .status-container {
+	opacity: 0.5;
+	font-size: 0.75em;
+}
+
 .notification-follow-container {
 	display: flex;
 }
