@@ -9,7 +9,7 @@
 }
 
 .status-container-container.highlight {
-	background-color: #cccccc;
+	background-color: #eeeeee;
 }
 
 .status-container {
@@ -18,9 +18,9 @@
 
 .status-content {
 	margin: 4px 0;
-	word-wrap: anywhere;
 	max-height: 600px;
 	overflow: auto;
+	word-wrap: anywhere;
 }
 
 .status-content p {
@@ -30,10 +30,13 @@
 .status-content img,
 .status-image,
 .status-video {
+	height: auto;
+	width: auto;
 	max-height: 240px;
 	max-width: 280px;
-	width: auto;
 	vertical-align: bottom;
+	object-fit: contain;
+	margin-bottom: 5px;
 }
 
 .status-media-container {
@@ -42,18 +45,25 @@
 
 .status-profile-img-container {
 	margin-right: 8px;
+	display: inline-block;
+	vertical-align: top;
 }
 
 .status-profile-img {
 	height: 48px;
 	width: 48px;
-	object-fit: contain;
+	min-height: 48px;
+	min-width: 48px;
+	max-height: 48px;
+	max-width: 48px;
 	vertical-align: top;
+	object-fit: contain;
+	margin-top: 2px;
 }
 
 .status {
-	flex: 1;
-	overflow-x: auto;
+	display: inline-block;
+	vertical-align: top;
 }
 
 .status-dname {
@@ -63,11 +73,8 @@
 
 .status-uname {
 	user-select: all;
-}
-
-.name-emoji {
-	height: 20px;
-	width: auto;
+	font-style: italic;
+	font-size: 10pt;
 }
 
 .status-action-container {
@@ -79,7 +86,7 @@
 	margin-right: 16px;
 }
 
-.status-action:last-child {
+.status-action-last {
 	margin-right: 4px;
 }
 
@@ -92,7 +99,7 @@
 }
 
 .status-action * {
-	verical-align: center;
+	vertical-align: middle;
 }
 
 .status-action a.status-time {
@@ -104,7 +111,7 @@
 }
 
 .post-form {
-	margin: 8px 0;
+	margin: 4px 0;
 }
 
 .post-form>div {
@@ -120,32 +127,38 @@
 }
 
 .retweet-info {
-	margin: 0 0 2px 24px;	
+	margin: 0 0 4px 24px;
 }
 
 .retweet-info .status-profile-img {
 	height: 24px;
 	width: 24px;
+	min-height: 24px;
+	min-width: 24px;
+	max-height: 24px;
+	max-width: 24px;
 	vertical-align: middle;
 }
 
-.retweet-info .status-dname{
-	margin-left: 4px
+.retweet-info .status-dname {
+	margin-left: 4px;
 }
 
 .post-content {
 	padding: 4px;
 	font-size: 11pt;
 	font-family: initial;
-	max-width: 100%;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .pagination {
-	margin: 4px;
+	margin: 4px 4px 12px 4px;
 }
 
 .pagination a {
 	margin: 0 8px;
+	font-size: 13pt;
 }
 
 .notification-container .retweet-info {
@@ -175,8 +188,14 @@
 	vertical-align: middle;
 }
 
-.notification-follow-uname {
-	margin-top: 8px;
+.notification-follow-container {
+	overflow: auto;
+	display: flex;
+	align-items: center;
+}
+
+.notification-follow {
+	overflow: auto;
 }
 
 .notification-time {
@@ -185,7 +204,6 @@
 
 .status-reply-to {
 	display: inline-block;
-	vertical-align: center;
 }
 
 .status-reply-to-link {
@@ -227,13 +245,13 @@
 }
 
 .user-profile-img-container {
-	display: inline-block
+	display: inline-block;
+	margin: 0 4px 0 0;
 }
 
 .user-profile-details-container {
 	display: inline-block;
 	vertical-align: top;
-	margin: 0 4px;
 }
 
 .user-profile-details-container>div {
@@ -241,10 +259,11 @@
 }
 
 .user-profile-img {
-	max-height: 100px;
-	max-width: 100px;
-	object-fit: contain;
+	height: 96px;
+	width: 96px;
 	vertical-align: top;
+	object-fit: contain;
+	margin-top: 2px;
 }
 
 .user-profile-decription {
@@ -272,7 +291,7 @@ a, .btn-link, .status-uname {
 
 a:hover,
 .btn-link:hover {
-	opacity: 0.6;
+	color: #9899c4;
 }
 
 .status-visibility {
@@ -290,16 +309,10 @@ a:hover,
 .img-link {
 	display: inline-block;
 	position: relative;
-	margin: 2.5px 0;
-}
-
-.img-link:hover {
-	opacity: initial;
 }
 
 .status-profile-img-container .img-link {
 	width: 48px;
-	overflow: hidden;
 }
 
 .status-nsfw-overlay {
@@ -326,61 +339,64 @@ a:hover,
 }
 
 .post-form-field>* {
-  vertical-align: middle;
+	vertical-align: middle;
 }
 
-.emoji-item {
+.emoji-item-container {
 	min-width: 220px;
 	display: inline-block;
 	margin: 4px 0;
 }
 
+.emoji-item {
+	display: flex;
+	align-items: center;
+}
+
 img.emoji {
-	height: 32px;
-	object-fit: contain;
+	height: auto;
+	width: auto;
+	max-height: 32px;
+	max-width: 32px;
+	min-height: 32px;
+	min-width: 32px;
 	vertical-align: middle;
+	object-fit: contain;
 }
 
 .status-dname img.emoji {
 	height: 24px;
+	min-height: 24px;
+	min-width: 24px;
 }
 
 .emoji-shortcode {
-	user-select: all;
-	vertical-align: middle;
-	display: inline-block;
+	margin-left: 4px;
 }
 
 .post-form-emoji-link {
 	margin-left: 4px;
 }
 
-.post-form-emoji-link i {
-	font-size: 14pt !important;
-}
-
-.post-form-title {
-	vertical-align: middle;
-}
-
-.user-info {
-	margin-bottom: 8px;
-	display: flex;
-	align-items: top;
-}
-
 .user-info-img {
-	max-height: 64px;
-	max-width: 64px;
-	object-fit: contain;
+	height: 64px;
+	width: 64px;
 	vertical-align: middle;
+	object-fit: contain;
+	margin-top: 2px;
+}
+
+.user-info-img-container {
+	float: left;
+	margin-right: 8px;
 }
 
 .user-info-details-container {
-	margin-left: 8px;
+	overflow: auto;
 }
 
-.user-info-details-container>div {
+.user-info-details-name,
+.user-info-details-nav {
 	margin-bottom: 4px;
 }
 
@@ -392,10 +408,20 @@ img.emoji {
 	margin: 8px 0;
 }
 
-.user-list-item>div {
-	display: inline-block;
-	vertical-align: top;
-	margin: 0 4px 8px 0;
+.user-list-item {
+	overflow: auto;
+	margin: 0 0 12px 0;
+	display: flex;
+	align-items: center;
+}
+
+.user-list-profile-img {
+	float: left;
+	margin: 0 8px 0 0;
+}
+
+.user-list-name {
+	overflow: auto;
 }
 
 #settings-form {
@@ -452,7 +478,7 @@ img.emoji {
 }
 
 .more-container:hover .more-content {
-	display: initial;
+	display: block;
 }
 
 .more-link {
@@ -499,6 +525,22 @@ body {
 	color: #221;
 }
 
+.keyboard-shortcuts {
+	margin-top: 12px;
+}
+
+.keyboard-shortcuts td {
+	padding: 2px 4px;
+}
+
+kbd {
+	border-radius: 3px;
+	padding: 1px 4px;
+	border: 1px solid #444444;
+	background-color: #eeeeee;
+	font-size: 10pt;
+}
+
 .dark {
 	background-color: #222222;
 	background-image: none;
@@ -529,6 +571,11 @@ body {
 	color: #81a2be;
 }
 
+.dark a:hover,
+.dark .btn-link:hover {
+	color: #497091;
+}
+
 .dark .status-visibility {
 	color: #eaeaea;
 }
@@ -536,6 +583,12 @@ body {
 .dark .more-content {
 	background-color: #222222;
 	border-color: #444444;
+}
+
+.dark kbd {
+	background-color: #333333;
+	border-color: #444444;
+	color: #eaeaea;
 }
 
 .status-color-00 { background-color: rgba(  0,   0,   0, 0.1); }

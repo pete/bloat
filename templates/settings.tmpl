@@ -5,6 +5,15 @@
 <form id="settings-form" action="/settings" method="POST">
 	<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 	<div class="settings-form-field">
+		<label for="visibility"> Default format </label>
+		{{$defFormat := .Settings.DefaultFormat}}
+		<select id="post-format" name="format">
+			{{range .PostFormats}} 
+				<option value="{{.Type}}" {{if eq $defFormat .Type}}selected{{end}}>{{.Name}}</option> 
+			{{end}}
+		</select>
+	</div>
+	<div class="settings-form-field">
 		<label for="visibility"> Default scope </label>
 		<select id="visibility" name="visibility">
 			<option value="public" {{if eq .Settings.DefaultVisibility "public"}}selected{{end}}>Public</option>
@@ -36,6 +45,11 @@
 	<div class="settings-form-field">
 		<input id="fluoride-mode" name="fluoride_mode" type="checkbox" value="true" {{if .Settings.FluorideMode}}checked{{end}}>
 		<label for="fluoride-mode"> Enable <abbr title="Enable JavaScript based functionality, e.g., like/retweet without page reload and reply preview on thread page">fluoride mode</abbr> </label>
+	</div>
+	<div class="settings-form-field">
+		<input id="anti-dopamine-mode" name="anti_dopamine_mode" type="checkbox"
+		value="true" {{if .Settings.AntiDopamineMode}}checked{{end}}>
+		<label for="anti-dopamine-mode"> Enable <abbr title="Remove like/retweet/unread notification count and disable like/retweet/follow notifications">anti-dopamine mode</abbr> </label>
 	</div>
 	<div class="settings-form-field">
 		<input id="dark-mode" name="dark_mode" type="checkbox" value="true" {{if .Settings.DarkMode}}checked{{end}}>

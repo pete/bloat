@@ -2,14 +2,14 @@
 <div class="user-list-container">
 	{{range .}}
 	<div class="user-list-item">
-		<div>
+		<div class="user-list-profile-img">
 			<a class="img-link" href="/user/{{.ID}}">
-				<img class="status-profile-img" src="{{.AvatarStatic}}" alt="avatar" />
+				<img class="status-profile-img" src="{{.AvatarStatic}}" title="@{{.Acct}}" alt="avatar" height="48" />
 			</a>
 		</div>
-		<div>
+		<div class="user-list-name">
 			<a class="img-link" href="/user/{{.ID}}">
-				<div class="status-uname"> {{.Acct}} </div>
+				<div class="status-uname"> @{{.Acct}} </div>
 			</a>
 			<div class="status-dname"> {{EmojiFilter .DisplayName .Emojis}} </div>  
 		</div>

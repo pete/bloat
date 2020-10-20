@@ -6,7 +6,7 @@
 <div>
 	<div class="user-profile-img-container">
 		<a class="img-link" href="{{.User.AvatarStatic}}" target="_blank">
-			<img class="user-profile-img" src="{{.User.AvatarStatic}}" alt="profile-avatar" />
+			<img class="user-profile-img" src="{{.User.AvatarStatic}}" alt="profile-avatar" height="96" />
 		</a>
 	</div>
 	<div class="user-profile-details-container">
@@ -97,6 +97,14 @@
 			<a href="/user/{{.User.ID}}/followers"> followers ({{.User.FollowersCount}}) </a> - 
 			<a href="/user/{{.User.ID}}/media"> media </a>
 		</div>
+		{{if .IsCurrent}}
+		<div>
+			<a href="/user/{{.User.ID}}/bookmarks"> bookmarks </a> -
+			<a href="/user/{{.User.ID}}/likes"> likes </a> -
+			<a href="/user/{{.User.ID}}/mutes"> mutes </a> -
+			<a href="/user/{{.User.ID}}/blocks"> blocks </a>
+		</div>
+		{{end}}
 		<div>
 			<a href="/usersearch/{{.User.ID}}"> search statuses </a>
 		</div>
@@ -111,6 +119,8 @@
 <div class="page-title"> Statuses </div>
 {{range .Statuses}}
 {{template "status.tmpl" (WithContext . $.Ctx)}}
+{{else}}
+<div class="no-data-found">No data found</div>
 {{end}}
 
 {{else if eq .Type "following"}}
@@ -125,12 +135,38 @@
 <div class="page-title"> Statuses with media </div>
 {{range .Statuses}}
 {{template "status.tmpl" (WithContext . $.Ctx)}}
+{{else}}
+<div class="no-data-found">No data found</div>
 {{end}}
+
+{{else if eq .Type "bookmarks"}}
+<div class="page-title"> Bookmarks </div>
+{{range .Statuses}}
+{{template "status.tmpl" (WithContext . $.Ctx)}}
+{{else}}
+<div class="no-data-found">No data found</div>
+{{end}}
+
+{{else if eq .Type "likes"}}
+<div class="page-title"> Likes </div>
+{{range .Statuses}}
+{{template "status.tmpl" (WithContext . $.Ctx)}}
+{{else}}
+<div class="no-data-found">No data found</div>
+{{end}}
+
+{{else if eq .Type "mutes"}}
+<div class="page-title"> Mutes </div>
+{{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
+
+{{else if eq .Type "blocks"}}
+<div class="page-title"> Blocks </div>
+{{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
 {{end}}
 
 <div class="pagination">
 	{{if .NextLink}}
-		<a href="{{.NextLink}}">next</a>
+		<a href="{{.NextLink}}">[next]</a>
 	{{end}}
 </div>
 

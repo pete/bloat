@@ -3,12 +3,15 @@
 	{{if .Reblog}}
 	<div class="retweet-info">
 		<a class="img-link" href="/user/{{.Account.ID}}">
-			<img class="status-profile-img" src="{{.Account.AvatarStatic}}" alt="avatar" />
+			<img class="status-profile-img" src="{{.Account.AvatarStatic}}" title="@{{.Account.Acct}}" alt="avatar" height="24" />
 		</a>
 		<a class="nav-link" href="/user/{{.Account.ID}}">
 			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
 		<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span>  
+		<a href="/user/{{.Account.ID}}"> 
+			<span class="status-uname"> @{{.Account.Acct}} </span> 
+		</a>
 		retweeted
 	</div>
 	{{template "status" (WithContext .Reblog $.Ctx)}}
@@ -18,13 +21,13 @@
 	<div class="status-container status-{{.ID}}" data-id="{{.ID}}">
 		<div class="status-profile-img-container">
 			<a class="img-link" href="/user/{{.Account.ID}}">
-				<img class="status-profile-img" src="{{.Account.AvatarStatic}}" alt="avatar" />
+				<img class="status-profile-img" src="{{.Account.AvatarStatic}}" title="@{{.Account.Acct}}" alt="avatar" height="48" />
 			</a>
 		</div>
 		<div class="status"> 
 			<div class="status-name">
 				<a href="/user/{{.Account.ID}}">
-					<span class="status-uname"> {{.Account.Acct}} </span>
+					<span class="status-uname"> @{{.Account.Acct}} </span>
 				</a>
 				<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span> 
 				<div class="more-container">
@@ -46,6 +49,19 @@
 							<input type="submit" value="mute" class="btn-link more-link">
 						</form>
 						{{end}}
+						{{if .Bookmarked}}
+						<form action="/unbookmark/{{.ID}}" method="post" target="_self">
+							<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+							<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
+							<input type="submit" value="unbookmark" class="btn-link more-link">
+						</form>
+						{{else}}
+						<form action="/bookmark/{{.ID}}" method="post" target="_self">
+							<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+							<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
+							<input type="submit" value="bookmark" class="btn-link more-link">
+						</form>
+						{{end}}
 						{{if eq $.Ctx.UserID .Account.ID}}
 						<form action="/delete/{{.ID}}" method="post" target="_self">
 							<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
@@ -59,7 +75,7 @@
 				{{if .InReplyToID}}
 				<div class="status-reply-to">
 					<a class="status-reply-to-link" href="{{if not .ShowReplies}}/thread/{{.InReplyToID}}{{end}}#status-{{.InReplyToID}}"> 
-						 in reply to {{if .IDNumbers}}#{{index .IDNumbers .InReplyToID}}{{end}} {{if .Pleroma.InReplyToAccountAcct}}{{.Pleroma.InReplyToAccountAcct}}{{else if not .IDNumbers}}{{.InReplyToID}}{{end}}
+						 in reply to {{if .IDNumbers}}#{{index .IDNumbers .InReplyToID}}{{end}} {{if .Pleroma.InReplyToAccountAcct}}@{{.Pleroma.InReplyToAccountAcct}}{{else if not .IDNumbers}}{{.InReplyToID}}{{end}}
 					</a>
 				</div>
 				{{if index .IDReplies .ID}} <span class="status-reply-info-divider"> - </span> {{end}}
@@ -84,7 +100,7 @@
 				<a href="{{.URL}}" target="_blank" title="{{.Description}}"> [image] </a>
 				{{else}}
 				<a class="img-link" href="{{.URL}}" target="_blank" title="{{.Description}}">
-					<img class="status-image" src="{{.URL}}" alt="status-image" />
+					<img class="status-image" src="{{.URL}}" alt="status-image" height="240" />
 					{{if (and $.Ctx.MaskNSFW $s.Sensitive)}}
 					<div class="status-nsfw-overlay"></div>
 					{{end}}
@@ -106,7 +122,7 @@
 				<a href="{{.URL}}" target="_blank" title="{{.Description}}"> [video] </a>
 				{{else}}
 				<div class="status-video-container" title="{{.Description}}">
-					<video class="status-video" controls>
+					<video class="status-video" controls height="240">
 						<source src="{{.URL}}">
 						<a href="{{.URL}}" target="_blank"> [video] </a>
 					</video>
@@ -163,7 +179,9 @@
 						reply
 					</a>
 					<a class="status-reply-count" href="/thread/{{.ID}}#status-{{.ID}}" {{if $.Ctx.ThreadInNewTab}}target="_blank"{{end}}>
-						{{if .RepliesCount}} ({{DisplayInteractionCount .RepliesCount}}) {{end}}
+						{{if and (not $.Ctx.AntiDopamineMode) .RepliesCount}}
+							({{DisplayInteractionCount .RepliesCount}})
+						{{end}}
 					</a>
 				</div>
 				<div class="status-action">
@@ -172,43 +190,33 @@
 						retweet
 					</a>
 					{{else}}
-					{{if .Reblogged}}
-					<form class="status-retweet" data-action="unretweet" action="/unretweet/{{.ID}}" method="post" target="_self">
+					{{$rt := "retweet"}} {{if .Reblogged}} {{$rt = "unretweet"}} {{end}}
+					<form class="status-retweet" data-action="{{$rt}}" action="/{{$rt}}/{{.ID}}" method="post" target="_self">
 						<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 						<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
-						<input type="submit" value="unretweet" class="btn-link">
-					</form>
-					{{else}}
-					<form class="status-retweet" data-action="retweet" action="/retweet/{{.ID}}" method="post" target="_self">
-						<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
-						<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
-						<input type="submit" value="retweet" class="btn-link">
+						<input type="submit" value="{{$rt}}" class="btn-link">
+						<a class="status-retweet-count" href="/retweetedby/{{.ID}}" title="click to see the the list"> 
+							{{if and (not $.Ctx.AntiDopamineMode) .ReblogsCount}}
+								({{DisplayInteractionCount .ReblogsCount}})
+							{{end}}
+						</a>
 					</form>
 					{{end}}
-					{{end}}
-					<a class="status-retweet-count" href="/retweetedby/{{.ID}}" title="click to see the the list"> 
-						{{if .ReblogsCount}} ({{DisplayInteractionCount .ReblogsCount}}) {{end}}
-					</a>
 				</div>
 				<div class="status-action">
-					{{if .Favourited}}
-					<form class="status-like" data-action="unlike" action="/unlike/{{.ID}}" method="post" target="_self">
+					{{$like := "like"}} {{if .Favourited}} {{$like = "unlike"}} {{end}}
+					<form class="status-like" data-action="{{$like}}" action="/{{$like}}/{{.ID}}" method="post" target="_self">
 						<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 						<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
-						<input type="submit" value="unlike" class="btn-link">
+						<input type="submit" value="{{$like}}" class="btn-link">
+						<a class="status-like-count" href="/likedby/{{.ID}}" title="click to see the the list"> 
+							{{if and (not $.Ctx.AntiDopamineMode) .FavouritesCount}}
+								({{DisplayInteractionCount .FavouritesCount}})
+							{{end}}
+						</a>
 					</form>
-					{{else}}
-					<form class="status-like" data-action="like" action="/like/{{.ID}}" method="post" target="_self">
-						<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
-						<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
-						<input type="submit" value="like" class="btn-link">
-					</form>
-					{{end}}
-					<a class="status-like-count" href="/likedby/{{.ID}}" title="click to see the the list"> 
-						{{if .FavouritesCount}} ({{DisplayInteractionCount .FavouritesCount}}) {{end}}
-					</a>
 				</div>
-				<div class="status-action">
+				<div class="status-action status-action-last">
 					<a class="status-time" href="{{if not .ShowReplies}}/thread/{{.ID}}{{end}}#status-{{.ID}}"
 						{{if $.Ctx.ThreadInNewTab}}target="_blank"{{end}}> 
 						<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}"> 

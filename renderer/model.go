@@ -6,13 +6,14 @@ import (
 )
 
 type Context struct {
-	HideAttachments bool
-	MaskNSFW        bool
-	FluorideMode    bool
-	ThreadInNewTab  bool
-	DarkMode        bool
-	CSRFToken       string
-	UserID          string
+	HideAttachments  bool
+	MaskNSFW         bool
+	FluorideMode     bool
+	ThreadInNewTab   bool
+	DarkMode         bool
+	CSRFToken        string
+	UserID           string
+	AntiDopamineMode bool
 }
 
 type NavData struct {
@@ -120,5 +121,6 @@ type SearchData struct {
 
 type SettingsData struct {
 	*CommonData
-	Settings *model.Settings
+	Settings    *model.Settings
+	PostFormats []model.PostFormat
 }

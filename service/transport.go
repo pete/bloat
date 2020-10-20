@@ -76,7 +76,7 @@ func NewHandler(s Service, staticDir string) http.Handler {
 			c := newClient(w, req, "")
 			err := s.ServeRootPage(c)
 			if err != nil {
-				if (err == errInvalidAccessToken) {
+				if err == errInvalidAccessToken {
 					w.Header().Add("Location", "/signin")
 					w.WriteHeader(http.StatusFound)
 					return
@@ -584,6 +584,7 @@ func NewHandler(s Service, staticDir string) http.Handler {
 	settings := func(w http.ResponseWriter, req *http.Request) {
 		c := newClient(w, req, req.FormValue("csrf_token"))
 		visibility := req.FormValue("visibility")
+		format := req.FormValue("format")
 		copyScope := req.FormValue("copy_scope") == "true"
 		threadInNewTab := req.FormValue("thread_in_new_tab") == "true"
 		hideAttachments := req.FormValue("hide_attachments") == "true"
@@ -591,9 +592,11 @@ func NewHandler(s Service, staticDir string) http.Handler {
 		arn := req.FormValue("auto_refresh_notifications") == "true"
 		fluorideMode := req.FormValue("fluoride_mode") == "true"
 		darkMode := req.FormValue("dark_mode") == "true"
+		antiDopamineMode := req.FormValue("anti_dopamine_mode") == "true"
 
 		settings := &model.Settings{
 			DefaultVisibility:        visibility,
+			DefaultFormat:            format,
 			CopyScope:                copyScope,
 			ThreadInNewTab:           threadInNewTab,
 			HideAttachments:          hideAttachments,
@@ -601,6 +604,7 @@ func NewHandler(s Service, staticDir string) http.Handler {
 			AutoRefreshNotifications: arn,
 			FluorideMode:             fluorideMode,
 			DarkMode:                 darkMode,
+			AntiDopamineMode:         antiDopamineMode,
 		}
 
 		err := s.SaveSettings(c, settings)
@@ -671,6 +675,46 @@ func NewHandler(s Service, staticDir string) http.Handler {
 		}
 
 		w.Header().Add("Location", req.Header.Get("Referer"))
+		w.WriteHeader(http.StatusFound)
+	}
+
+	bookmark := func(w http.ResponseWriter, req *http.Request) {
+		c := newClient(w, req, req.FormValue("csrf_token"))
+		id, _ := mux.Vars(req)["id"]
+		retweetedByID := req.FormValue("retweeted_by_id")
+
+		err := s.Bookmark(c, id)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			s.ServeErrorPage(c, err)
+			return
+		}
+
+		rID := id
+		if len(retweetedByID) > 0 {
+			rID = retweetedByID
+		}
+		w.Header().Add("Location", req.Header.Get("Referer")+"#status-"+rID)
+		w.WriteHeader(http.StatusFound)
+	}
+
+	unBookmark := func(w http.ResponseWriter, req *http.Request) {
+		c := newClient(w, req, req.FormValue("csrf_token"))
+		id, _ := mux.Vars(req)["id"]
+		retweetedByID := req.FormValue("retweeted_by_id")
+
+		err := s.UnBookmark(c, id)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			s.ServeErrorPage(c, err)
+			return
+		}
+
+		rID := id
+		if len(retweetedByID) > 0 {
+			rID = retweetedByID
+		}
+		w.Header().Add("Location", req.Header.Get("Referer")+"#status-"+rID)
 		w.WriteHeader(http.StatusFound)
 	}
 
@@ -789,6 +833,8 @@ func NewHandler(s Service, staticDir string) http.Handler {
 	r.HandleFunc("/unmuteconv/{id}", unMuteConversation).Methods(http.MethodPost)
 	r.HandleFunc("/delete/{id}", delete).Methods(http.MethodPost)
 	r.HandleFunc("/notifications/read", readNotifications).Methods(http.MethodPost)
+	r.HandleFunc("/bookmark/{id}", bookmark).Methods(http.MethodPost)
+	r.HandleFunc("/unbookmark/{id}", unBookmark).Methods(http.MethodPost)
 	r.HandleFunc("/signout", signout).Methods(http.MethodPost)
 	r.HandleFunc("/fluoride/like/{id}", fLike).Methods(http.MethodPost)
 	r.HandleFunc("/fluoride/unlike/{id}", fUnlike).Methods(http.MethodPost)

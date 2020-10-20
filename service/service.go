@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"html/template"
 	"mime/multipart"
 	"net/url"
 	"strings"
@@ -64,6 +65,8 @@ type Service interface {
 	UnMuteConversation(c *model.Client, id string) (err error)
 	Delete(c *model.Client, id string) (err error)
 	ReadNotifications(c *model.Client, maxID string) (err error)
+	Bookmark(c *model.Client, id string) (err error)
+	UnBookmark(c *model.Client, id string) (err error)
 }
 
 type service struct {
@@ -111,13 +114,14 @@ func getRendererContext(c *model.Client) *renderer.Context {
 		settings = *model.NewSettings()
 	}
 	return &renderer.Context{
-		HideAttachments: settings.HideAttachments,
-		MaskNSFW:        settings.MaskNSFW,
-		ThreadInNewTab:  settings.ThreadInNewTab,
-		FluorideMode:    settings.FluorideMode,
-		DarkMode:        settings.DarkMode,
-		CSRFToken:       session.CSRFToken,
-		UserID:          session.UserID,
+		HideAttachments:  settings.HideAttachments,
+		MaskNSFW:         settings.MaskNSFW,
+		ThreadInNewTab:   settings.ThreadInNewTab,
+		FluorideMode:     settings.FluorideMode,
+		DarkMode:         settings.DarkMode,
+		CSRFToken:        session.CSRFToken,
+		UserID:           session.UserID,
+		AntiDopamineMode: settings.AntiDopamineMode,
 	}
 }
 
@@ -196,6 +200,7 @@ func (svc *service) ServeNavPage(c *model.Client) (err error) {
 
 	postContext := model.PostContext{
 		DefaultVisibility: c.Session.Settings.DefaultVisibility,
+		DefaultFormat:     c.Session.Settings.DefaultFormat,
 		Formats:           svc.postFormats,
 	}
 
@@ -272,7 +277,7 @@ func (svc *service) ServeTimelinePage(c *model.Client, tType string,
 		}
 	}
 
-	if len(pg.MaxID) > 0 {
+	if len(pg.MaxID) > 0 && len(statuses) == 20 {
 		nextLink = fmt.Sprintf("/timeline/%s?max_id=%s", tType, pg.MaxID)
 	}
 
@@ -324,6 +329,7 @@ func (svc *service) ServeThreadPage(c *model.Client, id string, reply bool) (err
 
 		postContext = model.PostContext{
 			DefaultVisibility: visibility,
+			DefaultFormat:     c.Session.Settings.DefaultFormat,
 			Formats:           svc.postFormats,
 			ReplyContext: &model.ReplyContext{
 				InReplyToID:     id,
@@ -404,13 +410,18 @@ func (svc *service) ServeNotificationPage(c *model.Client, maxID string,
 	var nextLink string
 	var unreadCount int
 	var readID string
+	var excludes []string
 	var pg = mastodon.Pagination{
 		MaxID: maxID,
 		MinID: minID,
 		Limit: notificationSz,
 	}
 
-	notifications, err := c.GetNotifications(ctx, &pg)
+	if c.Session.Settings.AntiDopamineMode {
+		excludes = []string{"follow", "favourite", "reblog"}
+	}
+
+	notifications, err := c.GetNotifications(ctx, &pg, excludes)
 	if err != nil {
 		return
 	}
@@ -460,6 +471,7 @@ func (svc *service) ServeUserPage(c *model.Client, id string, pageType string,
 	if err != nil {
 		return
 	}
+	isCurrent := c.Session.UserID == user.ID
 
 	switch pageType {
 	case "":
@@ -498,14 +510,68 @@ func (svc *service) ServeUserPage(c *model.Client, id string, pageType string,
 			nextLink = fmt.Sprintf("/user/%s/media?max_id=%s",
 				id, pg.MaxID)
 		}
+	case "bookmarks":
+		if !isCurrent {
+			return errInvalidArgument
+		}
+		statuses, err = c.GetBookmarks(ctx, &pg)
+		if err != nil {
+			return
+		}
+		if len(statuses) == 20 && len(pg.MaxID) > 0 {
+			nextLink = fmt.Sprintf("/user/%s/bookmarks?max_id=%s",
+				id, pg.MaxID)
+		}
+	case "mutes":
+		if !isCurrent {
+			return errInvalidArgument
+		}
+		users, err = c.GetMutes(ctx, &pg)
+		if err != nil {
+			return
+		}
+		if len(users) == 20 && len(pg.MaxID) > 0 {
+			nextLink = fmt.Sprintf("/user/%s/mutes?max_id=%s",
+				id, pg.MaxID)
+		}
+	case "blocks":
+		if !isCurrent {
+			return errInvalidArgument
+		}
+		users, err = c.GetBlocks(ctx, &pg)
+		if err != nil {
+			return
+		}
+		if len(users) == 20 && len(pg.MaxID) > 0 {
+			nextLink = fmt.Sprintf("/user/%s/blocks?max_id=%s",
+				id, pg.MaxID)
+		}
+	case "likes":
+		if !isCurrent {
+			return errInvalidArgument
+		}
+		statuses, err = c.GetFavourites(ctx, &pg)
+		if err != nil {
+			return
+		}
+		if len(statuses) == 20 && len(pg.MaxID) > 0 {
+			nextLink = fmt.Sprintf("/user/%s/likes?max_id=%s",
+				id, pg.MaxID)
+		}
 	default:
 		return errInvalidArgument
+	}
+
+	for i := range statuses {
+		if statuses[i].Reblog != nil {
+			statuses[i].Reblog.RetweetedByID = statuses[i].ID
+		}
 	}
 
 	commonData := svc.getCommonData(c, user.DisplayName)
 	data := &renderer.UserData{
 		User:       user,
-		IsCurrent:  c.Session.UserID == user.ID,
+		IsCurrent:  isCurrent,
 		Type:       pageType,
 		Users:      users,
 		Statuses:   statuses,
@@ -527,25 +593,31 @@ func (svc *service) ServeUserSearchPage(c *model.Client,
 		return
 	}
 
-	results, err := c.Search(ctx, q, "statuses", 20, true, offset, id)
-	if err != nil {
-		return
+	var results *mastodon.Results
+	if len(q) > 0 {
+		results, err = c.Search(ctx, q, "statuses", 20, true, offset, id)
+		if err != nil {
+			return err
+		}
+	} else {
+		results = &mastodon.Results{}
 	}
 
 	if len(results.Statuses) == 20 {
 		offset += 20
-		nextLink = fmt.Sprintf("/usersearch/%s?q=%s&offset=%d", id, q, offset)
+		nextLink = fmt.Sprintf("/usersearch/%s?q=%s&offset=%d", id, url.QueryEscape(q), offset)
 	}
 
+	qq := template.HTMLEscapeString(q)
 	if len(q) > 0 {
-		title += " \"" + q + "\""
+		title += " \"" + qq + "\""
 	}
 
 	commonData := svc.getCommonData(c, title)
 	data := &renderer.UserSearchData{
 		CommonData: commonData,
 		User:       user,
-		Q:          q,
+		Q:          qq,
 		Statuses:   results.Statuses,
 		NextLink:   nextLink,
 	}
@@ -586,25 +658,31 @@ func (svc *service) ServeSearchPage(c *model.Client,
 	var nextLink string
 	var title = "search"
 
-	results, err := c.Search(ctx, q, qType, 20, true, offset, "")
-	if err != nil {
-		return
+	var results *mastodon.Results
+	if len(q) > 0 {
+		results, err = c.Search(ctx, q, qType, 20, true, offset, "")
+		if err != nil {
+			return err
+		}
+	} else {
+		results = &mastodon.Results{}
 	}
 
 	if (qType == "accounts" && len(results.Accounts) == 20) ||
 		(qType == "statuses" && len(results.Statuses) == 20) {
 		offset += 20
-		nextLink = fmt.Sprintf("/search?q=%s&type=%s&offset=%d", q, qType, offset)
+		nextLink = fmt.Sprintf("/search?q=%s&type=%s&offset=%d", url.QueryEscape(q), qType, offset)
 	}
 
+	qq := template.HTMLEscapeString(q)
 	if len(q) > 0 {
-		title += " \"" + q + "\""
+		title += " \"" + qq + "\""
 	}
 
 	commonData := svc.getCommonData(c, title)
 	data := &renderer.SearchData{
 		CommonData: commonData,
-		Q:          q,
+		Q:          qq,
 		Type:       qType,
 		Users:      results.Accounts,
 		Statuses:   results.Statuses,
@@ -618,8 +696,9 @@ func (svc *service) ServeSearchPage(c *model.Client,
 func (svc *service) ServeSettingsPage(c *model.Client) (err error) {
 	commonData := svc.getCommonData(c, "settings")
 	data := &renderer.SettingsData{
-		CommonData: commonData,
-		Settings:   &c.Session.Settings,
+		CommonData:  commonData,
+		Settings:    &c.Session.Settings,
+		PostFormats: svc.postFormats,
 	}
 
 	rCtx := getRendererContext(c)
@@ -885,4 +964,14 @@ func (svc *service) Delete(c *model.Client, id string) (err error) {
 
 func (svc *service) ReadNotifications(c *model.Client, maxID string) (err error) {
 	return c.ReadNotifications(ctx, maxID)
+}
+
+func (svc *service) Bookmark(c *model.Client, id string) (err error) {
+	_, err = c.Bookmark(ctx, id)
+	return
+}
+
+func (svc *service) UnBookmark(c *model.Client, id string) (err error) {
+	_, err = c.Unbookmark(ctx, id)
+	return
 }
