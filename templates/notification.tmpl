@@ -37,7 +37,7 @@
 				</span>
 			</div>
 			<div>
-				<a href="/user/{{.Account.ID}}"> <span class="status-uname"> @{{.Account.Acct}} </span> </a>
+				<a href="/user/{{.Account.ID}}"> <span class="status-uname"> {{.Account.Acct}} </span> </a>
 			</div>
 		</div>
 	</div>
@@ -51,7 +51,7 @@
 			<img class="status-profile-img" src="{{.Account.AvatarStatic}}" title="@{{.Account.Acct}}" alt="avatar" height="48" />
 		</a>
 		<a href="/user/{{.Account.ID}}">
-			<span class="status-uname"> @{{.Account.Acct}} </span>
+			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
 		<span> retweeted your post </span>
 		<span>
@@ -65,16 +65,10 @@
 		<a class="img-link" href="/user/{{.Account.ID}}">
 			<img class="status-profile-img" src="{{.Account.AvatarStatic}}" title="@{{.Account.Acct}}" alt="avatar" height="48" />
 		</a>
-		<a href="/user/{{.Account.ID}}">
-			<span class="status-uname"> @{{.Account.Acct}} </span>
-		</a>
-<<<<<<< HEAD
 		<a class="nav-link" href="/user/{{.Account.ID}}">
 			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
 		<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span>  
-=======
->>>>>>> 9a82a7d91492e3143332d98a6cea1dd644913287
 		<span> liked your post </span>
 		<span>
 			- <time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
