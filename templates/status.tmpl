@@ -75,7 +75,7 @@
 				{{if .InReplyToID}}
 				<div class="status-reply-to">
 					<a class="status-reply-to-link" href="{{if not .ShowReplies}}/thread/{{.InReplyToID}}{{end}}#status-{{.InReplyToID}}"> 
-						 in reply to {{if .IDNumbers}}#{{index .IDNumbers .InReplyToID}}{{end}} {{if .Pleroma.InReplyToAccountAcct}}{{.Pleroma.InReplyToAccountAcct}}{{else if not .IDNumbers}}{{.InReplyToID}}{{end}}
+						 in reply to {{if .IDNumbers}}#{{index .IDNumbers .InReplyToID}}{{end}} {{if .Pleroma.InReplyToAccountAcct}}@{{.Pleroma.InReplyToAccountAcct}}{{else if not .IDNumbers}}{{.InReplyToID}}{{end}}
 					</a>
 				</div>
 				{{if index .IDReplies .ID}} <span class="status-reply-info-divider"> - </span> {{end}}

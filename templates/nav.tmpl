@@ -9,7 +9,7 @@
 	<div class="user-info-details-container">
 		<div class="user-info-details-name">
 			<a class="nav-link" href="/user/{{.User.ID}}">
-				<span class="status-uname"> {{.User.Acct}} </span>
+				<span class="status-uname"> @{{.User.Acct}} </span>
 			</a>
 			<span class="status-dname"> {{EmojiFilter .User.DisplayName .User.Emojis}} </span>  
 		</div>
