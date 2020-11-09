@@ -63,6 +63,11 @@ type ThreadData struct {
 	ReplyMap    map[string][]mastodon.ReplyInfo
 }
 
+type StatusData struct {
+	*CommonData
+	Status    *mastodon.Status
+}
+
 type NotificationData struct {
 	*CommonData
 	Notifications []*mastodon.Notification

@@ -107,6 +107,14 @@ func (s *as) ServeThreadPage(c *model.Client, id string, reply bool) (err error)
 	return s.Service.ServeThreadPage(c, id, reply)
 }
 
+func (s *as) ServeStatusPopup(c *model.Client, id string) (err error) {
+	err = s.authenticateClient(c)
+	if err != nil {
+		return
+	}
+	return s.Service.ServeStatusPopup(c, id)
+}
+
 func (s *as) ServeLikedByPage(c *model.Client, id string) (err error) {
 	err = s.authenticateClient(c)
 	if err != nil {

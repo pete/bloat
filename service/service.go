@@ -28,6 +28,7 @@ type Service interface {
 	ServeTimelinePage(c *model.Client, tType string, maxID string,
 		minID string) (err error)
 	ServeThreadPage(c *model.Client, id string, reply bool) (err error)
+	ServeStatusPopup(c *model.Client, id string) (err error)
 	ServeLikedByPage(c *model.Client, id string) (err error)
 	ServeRetweetedByPage(c *model.Client, id string) (err error)
 	ServeNotificationPage(c *model.Client, maxID string, minID string) (err error)
@@ -363,6 +364,15 @@ func (svc *service) ServeThreadPage(c *model.Client, id string, reply bool) (err
 
 	rCtx := getRendererContext(c)
 	return svc.renderer.Render(rCtx, c.Writer, renderer.ThreadPage, data)
+}
+
+func (svc *service) ServeStatusPopup(c *model.Client, id string) (err error) {
+	status, err := c.GetStatus(ctx, id)
+	if err != nil {
+		return
+	}
+	rCtx := getRendererContext(c)
+	return svc.renderer.Render(rCtx, c.Writer, renderer.StatusPopup, status)
 }
 
 func (svc *service) ServeLikedByPage(c *model.Client, id string) (err error) {

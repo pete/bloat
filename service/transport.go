@@ -62,6 +62,7 @@ func serveJson(w io.Writer, data interface{}) (err error) {
 func serveJsonError(w http.ResponseWriter, err error) {
 	var d = make(map[string]interface{})
 	d["error"] = err.Error()
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusInternalServerError)
 	json.NewEncoder(w).Encode(d)
 	return
@@ -796,6 +797,17 @@ func NewHandler(s Service, staticDir string) http.Handler {
 		}
 	}
 
+	statusPopup := func(w http.ResponseWriter, req *http.Request) {
+		c := newClient(w, req, "")
+		id, _ := mux.Vars(req)["id"]
+
+		err := s.ServeStatusPopup(c, id)
+		if err != nil {
+			serveJsonError(w, err)
+			return
+		}
+	}
+
 	r.HandleFunc("/", rootPage).Methods(http.MethodGet)
 	r.HandleFunc("/nav", navPage).Methods(http.MethodGet)
 	r.HandleFunc("/signin", signinPage).Methods(http.MethodGet)
@@ -840,6 +852,7 @@ func NewHandler(s Service, staticDir string) http.Handler {
 	r.HandleFunc("/fluoride/unlike/{id}", fUnlike).Methods(http.MethodPost)
 	r.HandleFunc("/fluoride/retweet/{id}", fRetweet).Methods(http.MethodPost)
 	r.HandleFunc("/fluoride/unretweet/{id}", fUnretweet).Methods(http.MethodPost)
+	r.HandleFunc("/fluoride/status/{id}", statusPopup).Methods(http.MethodGet)
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static",
 		http.FileServer(http.Dir(staticDir))))
 

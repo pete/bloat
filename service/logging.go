@@ -67,6 +67,14 @@ func (s *ls) ServeThreadPage(c *model.Client, id string,
 	return s.Service.ServeThreadPage(c, id, reply)
 }
 
+func (s *ls) ServeStatusPopup(c *model.Client, id string) (err error) {
+	defer func(begin time.Time) {
+		s.logger.Printf("method=%v, id=%v, took=%v, err=%v\n",
+			"ServeStatusPopup", id, time.Since(begin), err)
+	}(time.Now())
+	return s.Service.ServeStatusPopup(c, id)
+}
+
 func (s *ls) ServeLikedByPage(c *model.Client, id string) (err error) {
 	defer func(begin time.Time) {
 		s.logger.Printf("method=%v, id=%v, took=%v, err=%v\n",

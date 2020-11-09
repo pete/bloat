@@ -7,6 +7,8 @@ var reverseActions = {
 	"unretweet": "retweet"
 };
 
+var statusCache = {};
+
 var csrfToken = "";
 var antiDopamineMode = false;
 
@@ -33,11 +35,12 @@ function http(method, url, body, type, success, error) {
 	};
 	req.onerror = function() {
 		if (typeof error === "function") {
-			error(this.responseText);
+			error(this);
 		}
 	};
 	req.open(method, url);
-	req.setRequestHeader("Content-Type", type);
+	if (type)
+		req.setRequestHeader("Content-Type", type);
 	req.send(body);
 }
 
@@ -132,12 +135,7 @@ function isInView(el) {
 	return false;
 }
 
-function handleReplyToLink(a) {
-	if (!a)
-		return;
-	var id = a.getAttribute("href");
-	if (!id || id[0] != "#")
-		return;
+function replyToLinkLocal(a) {
 	a.onmouseenter = function(event) {
 		var id = event.target.getAttribute("href");
 		var status = document.querySelector(id);
@@ -165,6 +163,68 @@ function handleReplyToLink(a) {
 			document.querySelector(id)
 				.classList.remove("highlight");
 		}
+	}
+}
+
+var inMouseEnter = false;
+function replyToLinkRemote(a) {
+	a.onmouseenter = function(event) {
+		inMouseEnter = true;
+		var id = event.target.getAttribute("href");
+		var arr = id.replace("/thread", "").split("#");
+		if (arr.length < 2)
+			return
+		id = arr[1].replace("status-", "");
+		if (statusCache[id]) {
+			var copy = document.createElement("div");
+			copy.innerHTML = statusCache[id];
+			copy = copy.firstElementChild;
+			copy.id = "reply-to-popup";
+			var ract = event.target.getBoundingClientRect();
+			if (ract.top > window.innerHeight / 2) {
+				copy.style.bottom = (window.innerHeight - 
+					window.scrollY - ract.top) + "px";
+			}
+			event.target.parentElement.appendChild(copy);
+		} else {
+			http("GET", "/fluoride/status/"+id, null, null, function(res, type) {
+				statusCache[id] = res;
+				if (!inMouseEnter)
+					return;
+				var copy = document.createElement("div");
+				copy.innerHTML = res;
+				copy = copy.firstElementChild;
+				copy.id = "reply-to-popup";
+				var ract = event.target.getBoundingClientRect();
+				if (ract.top > window.innerHeight / 2) {
+					copy.style.bottom = (window.innerHeight - 
+						window.scrollY - ract.top) + "px";
+				}
+				event.target.parentElement.appendChild(copy);
+			}, function(err) {
+				console.log("error:", err);
+			})
+		}
+	}
+	a.onmouseleave = function(event) {
+		inMouseEnter = false;
+		var popup = document.getElementById("reply-to-popup");
+		if (popup) {
+			popup.parentElement.removeChild(popup);    
+		} 
+	}
+}
+
+function handleReplyToLink(a) {
+	if (!a)
+		return;
+	var id = a.getAttribute("href");
+	if (!id)
+		return;
+	if (id[0] === "#") {
+		replyToLinkLocal(a);
+	} else if (id.indexOf("/thread/") === 0) {
+		replyToLinkRemote(a);
 	}
 }
 

@@ -1,0 +1,15 @@
+{{with $s := .Data}}
+{{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
+<div class="page-title"> Thread </div>
+
+{{range .Statuses}}
+
+{{template "status.tmpl" (WithContext . $.Ctx)}}
+{{if $s.PostContext.ReplyContext}}{{if eq .ID $s.PostContext.ReplyContext.InReplyToID}}
+{{template "postform.tmpl" (WithContext $s.PostContext $.Ctx)}}
+{{end}}{{end}}
+
+{{end}}
+
+{{template "footer.tmpl"}}
+{{end}}
