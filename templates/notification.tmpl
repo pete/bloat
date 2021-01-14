@@ -66,15 +66,9 @@
 		<a class="nav-link" href="/user/{{.Account.ID}}">
 			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
-<<<<<<< HEAD
-		<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span>  
-		<span> liked your post </span>
-		<span>
-			- <time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
-=======
+		<bdi class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </bdi>
 		<span class="notification-text"> liked your post - 
 			<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
->>>>>>> upstream/master
 		</span>
 	</div>
 	{{template "status" (WithContext .Status $.Ctx)}}
