@@ -8,10 +8,10 @@
 	</div>
 	<div class="user-info-details-container">
 		<div class="user-info-details-name">
-			<a class="nav-link" href="/user/{{.User.ID}}">
+			<a class="nav-link" href="/user/{{.User.ID}}" accesskey="0" title="User profile (0)">
 				<span class="status-uname"> {{.User.Acct}} </span>
 			</a>
-			<span class="status-dname"> {{EmojiFilter .User.DisplayName .User.Emojis}} </span>  
+			<bdi class="status-dname"> {{EmojiFilter .User.DisplayName .User.Emojis}} </bdi>  
 		</div>
 		<div class="user-info-details-nav">
 			<a class="nav-link" href="/timeline/home" accesskey="1" title="Home timeline (1)">home</a>

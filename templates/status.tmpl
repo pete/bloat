@@ -8,9 +8,9 @@
 		<a class="nav-link" href="/user/{{.Account.ID}}">
 			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
-		<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span>  
+		<bdi class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </bdi>
 		<a href="/user/{{.Account.ID}}"> 
-			<span class="status-uname"> {{.Account.Acct}} </span> 
+			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
 		retweeted
 	</div>
@@ -73,25 +73,22 @@
 			</div>
 			<div class="status-reply-container">
 				{{if .InReplyToID}}
-				<div class="status-reply-to">
-					<a class="status-reply-to-link" href="{{if not .ShowReplies}}/thread/{{.InReplyToID}}{{end}}#status-{{.InReplyToID}}"> 
-						 in reply to {{if .IDNumbers}}#{{index .IDNumbers .InReplyToID}}{{end}} {{if .Pleroma.InReplyToAccountAcct}}@{{.Pleroma.InReplyToAccountAcct}}{{else if not .IDNumbers}}{{.InReplyToID}}{{end}}
-					</a>
-				</div>
+				<a class="status-reply-to-link" href="{{if not .ShowReplies}}/thread/{{.InReplyToID}}{{end}}#status-{{.InReplyToID}}"> 
+					 in reply to {{if .IDNumbers}}#{{index .IDNumbers .InReplyToID}}{{end}} {{if .Pleroma.InReplyToAccountAcct}}@{{.Pleroma.InReplyToAccountAcct}}{{else if not .IDNumbers}}{{.InReplyToID}}{{end}}
+				</a>
 				{{if index .IDReplies .ID}} <span class="status-reply-info-divider"> - </span> {{end}}
 				{{end}}
 				{{if .ShowReplies}}
 				{{if index .IDReplies .ID}} <span class="status-reply-text"> replies: </span> {{end}}
 				{{range index .IDReplies .ID}}
-				<div class="status-reply">
-					<a class="status-reply-link" href="#status-{{.ID}}">#{{.Number}}</a>
-				</div>
+				<a class="status-reply-link" href="#status-{{.ID}}">#{{.Number}}</a>
 				{{end}}
 				{{end}}
 			</div>
 			{{if .Content}}
 			<div class="status-content"> {{StatusContentFilter .SpoilerText .Content .Emojis .Mentions}} </div>
 			{{end}}
+			{{if .MediaAttachments}}
 			<div class="status-media-container">
 				{{range .MediaAttachments}}
 
@@ -135,9 +132,9 @@
 				{{else}}
 				<a href="{{.URL}}" target="_blank" title="{{.Description}}"> [attachment] </a>
 				{{end}}
-
 				{{end}}
 			</div>
+			{{end}}
 			{{if .Poll}}
 			<form class="poll-form" action="/vote/{{.Poll.ID}}" method="POST" target="_self">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
@@ -209,7 +206,7 @@
 						<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 						<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
 						<input type="submit" value="{{$like}}" class="btn-link">
-						<a class="status-like-count" href="/likedby/{{.ID}}" title="click to see the the list"> 
+						<a class="status-like-count" href="/likedby/{{.ID}}" title="click to see the the list">
 							{{if and (not $.Ctx.AntiDopamineMode) .FavouritesCount}}
 								({{DisplayInteractionCount .FavouritesCount}})
 							{{end}}
@@ -219,7 +216,7 @@
 				<div class="status-action status-action-last">
 					<a class="status-time" href="{{if not .ShowReplies}}/thread/{{.ID}}{{end}}#status-{{.ID}}"
 						{{if $.Ctx.ThreadInNewTab}}target="_blank"{{end}}> 
-						<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}"> 
+						<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">
 							{{TimeSince .CreatedAt}}
 						</time> 
 					</a>
