@@ -155,8 +155,8 @@ func (s *service) NavPage(c *client) (err error) {
 	return s.renderer.Render(rCtx, c, renderer.NavPage, data)
 }
 
-func (s *service) TimelinePage(c *client, tType string,
-	maxID string, minID string) (err error) {
+func (s *service) TimelinePage(c *client, tType string, maxID string,
+	minID string, instance string) (err error) {
 
 	var nextLink, prevLink, title string
 	var statuses []*mastodon.Status
@@ -181,6 +181,22 @@ func (s *service) TimelinePage(c *client, tType string,
 	case "twkn":
 		statuses, err = c.GetTimelinePublic(ctx, false, &pg)
 		title = "The Whole Known Network"
+	case "remote":
+		if len(instance) < 1 {
+			return errInvalidArgument
+		}
+		var instanceURL string
+		if strings.HasPrefix(instance, "https://") {
+			instanceURL = instance
+			instance = strings.TrimPrefix(instance, "https://")
+		} else {
+			instanceURL = "https://" + instance
+		}
+		c.Client = mastodon.NewClient(&mastodon.Config{
+			Server: instanceURL,
+		})
+		statuses, err = c.GetTimelinePublic(ctx, true, &pg)
+		title = "Remote Timeline of " + instance
 	}
 	if err != nil {
 		return err
@@ -192,32 +208,22 @@ func (s *service) TimelinePage(c *client, tType string,
 		}
 	}
 
-	if len(maxID) > 0 && len(statuses) > 0 {
-		prevLink = fmt.Sprintf("/timeline/%s?min_id=%s", tType,
-			statuses[0].ID)
-	}
-
-	if len(minID) > 0 && len(pg.MinID) > 0 {
-		newPg := &mastodon.Pagination{MinID: pg.MinID, Limit: 20}
-		newStatuses, err := c.GetTimelineHome(ctx, newPg)
-		if err != nil {
-			return err
+	if (len(maxID) > 0 || len(minID) > 0) && len(statuses) > 0 {
+		q := make(url.Values)
+		q["min_id"] = []string{statuses[0].ID}
+		if tType == "remote" {
+			q["instance"] = []string{instance}
 		}
-		newLen := len(newStatuses)
-		if newLen == 20 {
-			prevLink = fmt.Sprintf("/timeline/%s?min_id=%s",
-				tType, pg.MinID)
-		} else {
-			i := 20 - newLen - 1
-			if len(statuses) > i {
-				prevLink = fmt.Sprintf("/timeline/%s?min_id=%s",
-					tType, statuses[i].ID)
-			}
-		}
+		prevLink = fmt.Sprintf("/timeline/%s?%s", tType, q.Encode())
 	}
 
 	if len(pg.MaxID) > 0 && len(statuses) == 20 {
-		nextLink = fmt.Sprintf("/timeline/%s?max_id=%s", tType, pg.MaxID)
+		q := make(url.Values)
+		q["max_id"] = []string{pg.MaxID}
+		if tType == "remote" {
+			q["instance"] = []string{instance}
+		}
+		nextLink = fmt.Sprintf("/timeline/%s?%s", tType, q.Encode())
 	}
 
 	commonData := s.getCommonData(c, tType+" timeline ")
