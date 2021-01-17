@@ -4,8 +4,7 @@
 	border-left: 4px solid transparent;
 }
 
-.status-container-container:target,
-.status-container-container.unread {
+.status-container-container:target {
 	border-color: #777777;
 }
 
@@ -175,13 +174,13 @@
 	font-size: 13pt;
 }
 
+
 .notification-container .retweet-info {
 	opacity: 0.8;
 }
 
-.notification-container {
-	margin: 16px 0 16px -4px;
-	padding: 0 4px;
+	margin: 0 -4px 12px -4px;
+	padding: 4px;
 	border-left: 4px solid transparent;
 }
 
@@ -189,8 +188,9 @@
 	border-color: #777777;
 }
 
-.notification-container.favourite .status-container, .notification-container.reblog .status-container {
-	opacity: 0.5;
+.notification-container.favourite .status-container,
+.notification-container.reblog .status-container {
+	opacity: 0.6;
 	font-size: 0.75em;
 }
 
