@@ -183,6 +183,7 @@ body {
 	opacity: 0.8;
 }
 
+.notification-container {
 	margin: 0 -4px 12px -4px;
 	padding: 4px;
 	border-left: 4px solid transparent;
