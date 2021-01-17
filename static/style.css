@@ -1,3 +1,7 @@
+body {
+	background-color: #d2d2d2;
+}
+
 .status-container-container {
 	margin: 0 -4px 12px -4px;
 	padding: 4px;
@@ -306,7 +310,7 @@ a, .btn-link, .status-uname {
 
 a:hover,
 .btn-link:hover {
-	color: #9899c4;
+	color: #8387bf;
 }
 
 .status-visibility {
@@ -457,7 +461,7 @@ img.emoji {
 
 #reply-popup {
 	position: absolute;
-	background: #ffffff;
+	background-color: #d2d2d2;
 	border: 1px solid #aaaaaa;
 	padding: 4px 8px;
 	z-index: 3;
@@ -466,7 +470,7 @@ img.emoji {
 
 #reply-to-popup {
 	position: absolute;
-	background: #ffffff;
+	background-color: #d2d2d2;
 	border: 1px solid #aaaaaa;
 	padding: 4px 8px;
 	z-index: 3;
@@ -486,7 +490,7 @@ img.emoji {
 .more-content {
 	display: none;
 	position: absolute;
-	background-color: #ffffff;
+	background-color: #d2d2d2;
 	padding: 2px 4px;
 	border: 1px solid #aaaaaa;
 }
