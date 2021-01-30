@@ -14,6 +14,7 @@ type Context struct {
 	CSRFToken        string
 	UserID           string
 	AntiDopamineMode bool
+	Referrer         string
 }
 
 type NavData struct {
@@ -23,12 +24,12 @@ type NavData struct {
 }
 
 type CommonData struct {
-	Title       string
-	CustomCSS   string
-	CSRFToken   string
-	Count       int
-	AutoRefresh bool
-	Target      string
+	Title           string
+	CustomCSS       string
+	CSRFToken       string
+	Count           int
+	RefreshInterval int
+	Target          string
 }
 
 type ErrorData struct {
@@ -51,6 +52,8 @@ type RootData struct {
 type TimelineData struct {
 	*CommonData
 	Title    string
+	Type     string
+	Instance string
 	Statuses []*mastodon.Status
 	NextLink string
 	PrevLink string

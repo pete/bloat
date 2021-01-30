@@ -1,11 +1,14 @@
+body {
+	background-color: #d2d2d2;
+}
+
 .status-container-container {
 	margin: 0 -4px 12px -4px;
 	padding: 4px;
 	border-left: 4px solid transparent;
 }
 
-.status-container-container:target,
-.status-container-container.unread {
+.status-container-container:target {
 	border-color: #777777;
 }
 
@@ -173,6 +176,21 @@
 	font-size: 13pt;
 }
 
+.notification-container {
+	margin: 0 -4px 12px -4px;
+	padding: 4px;
+	border-left: 4px solid transparent;
+}
+
+.notification-container.unread {
+	border-color: #777777;
+}
+
+.notification-container.favourite .status-container,
+.notification-container.reblog .status-container {
+	opacity: 0.6;
+}
+
 .notification-info-text span {
 	vertical-align: middle;
 }
@@ -231,7 +249,7 @@
 
 .user-profile-img-container {
 	display: inline-block;
-	margin: 0 4px 0 0;
+	margin: 0 4px 4px 0;
 }
 
 .user-profile-details-container {
@@ -281,7 +299,7 @@ a, .btn-link {
 
 a:hover,
 .btn-link:hover {
-	color: #9899c4;
+	color: #8387bf;
 }
 
 .status-visibility {
@@ -312,7 +330,6 @@ a:hover,
 	bottom: 0;
 	left: 0;
 	right: 0;
-	margin-bottom: 5px;
 }
 
 .img-link:hover .status-nsfw-overlay {
@@ -322,7 +339,7 @@ a:hover,
 .status-video-container {
 	display: inline-block;
 	position: relative;
-	margin: 2.5px 0;
+	margin-bottom: 5px;
 }
 
 .status-video-container:hover .status-nsfw-overlay {
@@ -423,7 +440,7 @@ img.emoji {
 	margin: 4px 0;
 }
 
-.settings-form-field * {
+.settings-form-field>* {
 	vertical-align: middle;
 }
 
@@ -433,7 +450,7 @@ img.emoji {
 
 #reply-popup {
 	position: absolute;
-	background: #ffffff;
+	background-color: #d2d2d2;
 	border: 1px solid #aaaaaa;
 	padding: 4px 8px;
 	z-index: 3;
@@ -442,7 +459,7 @@ img.emoji {
 
 #reply-to-popup {
 	position: absolute;
-	background: #ffffff;
+	background-color: #d2d2d2;
 	border: 1px solid #aaaaaa;
 	padding: 4px 8px;
 	z-index: 3;
@@ -462,7 +479,7 @@ img.emoji {
 .more-content {
 	display: none;
 	position: absolute;
-	background-color: #ffffff;
+	background-color: #d2d2d2;
 	padding: 2px 4px;
 	border: 1px solid #aaaaaa;
 }

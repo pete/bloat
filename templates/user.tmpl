@@ -11,7 +11,7 @@
 	</div>
 	<div class="user-profile-details-container">
 		<div>
-			<span class="status-dname"> {{EmojiFilter .User.DisplayName .User.Emojis}} </span>  
+			<bdi class="status-dname"> {{EmojiFilter .User.DisplayName .User.Emojis}} </bdi>  
 			<span class="status-uname"> @{{.User.Acct}} </span>
 			<a class="remote-link" href="{{.User.URL}}" target="_blank" title="remote profile">
 				source
@@ -23,11 +23,13 @@
 			{{if .User.Pleroma.Relationship.Following}} 
 			<form class="d-inline" action="/unfollow/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="unfollow" class="btn-link">
 			</form>
 			{{else}}
 			<form class="d-inline" action="/follow/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="{{if .User.Pleroma.Relationship.Requested}}resend request{{else}}follow{{end}}" class="btn-link">
 			</form>
 			{{end}}
@@ -35,6 +37,7 @@
 			-
 			<form class="d-inline" action="/unfollow/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="cancel request" class="btn-link">
 			</form>
 			{{end}}
@@ -42,11 +45,13 @@
 			{{if .User.Pleroma.Relationship.Subscribing}}
 			<form class="d-inline" action="/unsubscribe/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="unsubscribe" class="btn-link">
 			</form>
 			{{else}}
 			<form class="d-inline" action="/subscribe/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="subscribe" class="btn-link">
 			</form>
 			{{end}}
@@ -55,11 +60,13 @@
 			{{if .User.Pleroma.Relationship.Blocking}}
 			<form class="d-inline" action="/unblock/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="unblock" class="btn-link">
 			</form>
 			{{else}}
 			<form class="d-inline" action="/block/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="block" class="btn-link">
 			</form>
 			{{end}}
@@ -67,11 +74,13 @@
 			{{if .User.Pleroma.Relationship.Muting}}
 			<form class="d-inline" action="/unmute/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="unmute" class="btn-link">
 			</form>
 			{{else}}
 			<form class="d-inline" action="/mute/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="mute" class="btn-link">
 			</form>
 			{{end}}
@@ -80,11 +89,13 @@
 			{{if .User.Pleroma.Relationship.ShowingReblogs}}
 			<form class="d-inline" action="/follow/{{.User.ID}}?reblogs=false" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="hide retweets" class="btn-link">
 			</form>
 			{{else}}
 			<form class="d-inline" action="/follow/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="show retweets" class="btn-link">
 			</form>
 			{{end}}
@@ -99,10 +110,11 @@
 		</div>
 		{{if .IsCurrent}}
 		<div>
-			<a href="/user/{{.User.ID}}/bookmarks"> bookmarks </a> -
-			<a href="/user/{{.User.ID}}/likes"> likes </a> -
-			<a href="/user/{{.User.ID}}/mutes"> mutes </a> -
-			<a href="/user/{{.User.ID}}/blocks"> blocks </a>
+			<a href="/user/{{.User.ID}}/bookmarks"> bookmarks </a>
+			- <a href="/user/{{.User.ID}}/likes"> likes </a>
+			- <a href="/user/{{.User.ID}}/mutes"> mutes </a>
+			- <a href="/user/{{.User.ID}}/blocks"> blocks </a>
+			{{if .User.Locked}}- <a href="/user/{{.User.ID}}/requests"> requests </a>{{end}}
 		</div>
 		{{end}}
 		<div>
@@ -162,6 +174,10 @@
 {{else if eq .Type "blocks"}}
 <div class="page-title"> Blocks </div>
 {{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
+
+{{else if eq .Type "requests"}}
+<div class="page-title"> Follow requests </div>
+{{template "requestlist.tmpl" (WithContext .Users $.Ctx)}}
 {{end}}
 
 <div class="pagination">
