@@ -11,6 +11,7 @@ type Settings struct {
 	FluorideMode         bool   `json:"fluoride_mode"`
 	DarkMode             bool   `json:"dark_mode"`
 	AntiDopamineMode     bool   `json:"anti_dopamine_mode"`
+	CustomCSS            string `json:"custom_css"`
 }
 
 func NewSettings() *Settings {
@@ -25,5 +26,6 @@ func NewSettings() *Settings {
 		FluorideMode:         false,
 		DarkMode:             false,
 		AntiDopamineMode:     false,
+		CustomCSS:            "",
 	}
 }

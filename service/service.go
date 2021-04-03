@@ -77,6 +77,7 @@ func getRendererContext(c *client) *renderer.Context {
 		CSRFToken:        session.CSRFToken,
 		UserID:           session.UserID,
 		AntiDopamineMode: settings.AntiDopamineMode,
+		CustomCSS:        settings.CustomCSS,
 		Referrer:         referrer,
 	}
 }

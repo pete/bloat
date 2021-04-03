@@ -498,6 +498,7 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 		fluorideMode := c.Req.FormValue("fluoride_mode") == "true"
 		darkMode := c.Req.FormValue("dark_mode") == "true"
 		antiDopamineMode := c.Req.FormValue("anti_dopamine_mode") == "true"
+		customCSS := c.Req.FormValue("custom_css")
 
 		settings := &model.Settings{
 			DefaultVisibility:    visibility,
@@ -510,6 +511,7 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 			FluorideMode:         fluorideMode,
 			DarkMode:             darkMode,
 			AntiDopamineMode:     antiDopamineMode,
+			CustomCSS:            customCSS,
 		}
 
 		err := s.SaveSettings(c, settings)
