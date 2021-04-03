@@ -134,6 +134,10 @@ func formatTimeRFC822(t time.Time) string {
 	return t.Format(time.RFC822)
 }
 
+func formatTimeSimple(t time.Time) string {
+	return t.Format("2006-01-02 15:04:05")
+}
+
 func withContext(data interface{}, ctx *Context) TemplateData {
 	return TemplateData{data, ctx}
 }
@@ -157,6 +161,7 @@ func NewRenderer(templateGlobPattern string) (r *renderer, err error) {
 		"TimeUntil":               timeUntil,
 		"FormatTimeRFC3339":       formatTimeRFC3339,
 		"FormatTimeRFC822":        formatTimeRFC822,
+		"FormatTimeSimple":        formatTimeSimple,
 		"WithContext":             withContext,
 	}).ParseGlob(templateGlobPattern)
 	if err != nil {
