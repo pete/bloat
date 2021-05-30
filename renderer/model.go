@@ -14,13 +14,8 @@ type Context struct {
 	CSRFToken        string
 	UserID           string
 	AntiDopamineMode bool
+	UserCSS          string
 	Referrer         string
-}
-
-type NavData struct {
-	CommonData  *CommonData
-	User        *mastodon.Account
-	PostContext model.PostContext
 }
 
 type CommonData struct {
@@ -32,9 +27,17 @@ type CommonData struct {
 	Target          string
 }
 
+type NavData struct {
+	CommonData  *CommonData
+	User        *mastodon.Account
+	PostContext model.PostContext
+}
+
 type ErrorData struct {
 	*CommonData
-	Error string
+	Err        string
+	Retry      bool
+	SessionErr bool
 }
 
 type HomePageData struct {
@@ -131,4 +134,9 @@ type SettingsData struct {
 	*CommonData
 	Settings    *model.Settings
 	PostFormats []model.PostFormat
+}
+
+type FiltersData struct {
+	*CommonData
+	Filters []*mastodon.Filter
 }
