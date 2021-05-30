@@ -630,7 +630,7 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 	}, CSRF, JSON)
 
 	fStatus := handle(func(c *client) error {
-		id, _ := mux.Vars(c.Req)["id"]
+		id, _ := mux.Vars(c.r)["id"]
 		return s.StatusPopup(c, id)
 	}, SESSION, JSON)
 

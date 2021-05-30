@@ -322,12 +322,11 @@ func (s *service) ThreadPage(c *client, id string, reply bool) (err error) {
 }
 
 func (svc *service) StatusPopup(c *client, id string) (err error) {
-	status, err := c.GetStatus(ctx, id)
+	status, err := c.GetStatus(c.ctx, id)
 	if err != nil {
 		return
 	}
-	rCtx := getRendererContext(c)
-	return svc.renderer.Render(rCtx, c, renderer.StatusPopup, status)
+	return svc.renderer.Render(c.rctx, c.w, renderer.StatusPopup, status)
 }
 
 func (s *service) LikedByPage(c *client, id string) (err error) {
