@@ -2,7 +2,7 @@
 {{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
 <div class="page-title"> User </div>
 
-<div class="user-info-container">
+<div class="user-info-container"{{if .User.HeaderStatic}} style="background-image: url({{.User.HeaderStatic}});"{{end}}>
 <div>
 	<div class="user-profile-img-container">
 		<a class="img-link" href="{{.User.AvatarStatic}}" target="_blank">

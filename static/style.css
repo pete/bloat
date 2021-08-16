@@ -259,9 +259,20 @@ body {
 	margin: 2px 0;
 }
 
+.user-info-container {
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.user-info-container > * {
+	padding: 0.25em;
+	background-color: rgba(210, 210, 210, 0.8);
+}
+
 .user-profile-img-container {
 	display: inline-block;
 	margin: 0 4px 4px 0;
+	padding: 1em;
 }
 
 .user-profile-details-container {
@@ -617,6 +628,10 @@ kbd {
 	background-color: #333333;
 	border-color: #444444;
 	color: #eaeaea;
+}
+
+.dark .user-info-container > * {
+	background-color: rgba(34, 34, 34, 0.8);
 }
 
 .status-color-00 { background-color: rgba(  0,   0,   0, 0.1); }
