@@ -69,6 +69,13 @@ type ThreadData struct {
 	ReplyMap    map[string][]mastodon.ReplyInfo
 }
 
+type QuickReplyData struct {
+	*CommonData
+	Ancestor    *mastodon.Status
+	Status      *mastodon.Status
+	PostContext model.PostContext
+}
+
 type StatusData struct {
 	*CommonData
 	Status    *mastodon.Status

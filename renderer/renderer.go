@@ -20,6 +20,7 @@ const (
 	RootPage         = "root.tmpl"
 	TimelinePage     = "timeline.tmpl"
 	ThreadPage       = "thread.tmpl"
+	QuickReplyPage   = "quickreply.tmpl"
 	StatusPopup      = "status.tmpl"
 	NotificationPage = "notification.tmpl"
 	UserPage         = "user.tmpl"
