@@ -8,7 +8,7 @@
 		<a class="nav-link" href="/user/{{.Account.ID}}">
 			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
-		<bdi class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </bdi>
+		<bdi class="status-dname"> {{EmojiFilter (html .Account.DisplayName) .Account.Emojis}} </bdi>  
 		<a href="/user/{{.Account.ID}}"> 
 			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
@@ -29,7 +29,7 @@
 				<a href="/user/{{.Account.ID}}">
 					<span class="status-uname"> {{.Account.Acct}} </span>
 				</a>
-				<span class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </span> 
+				<bdi class="status-dname"> {{EmojiFilter (html .Account.DisplayName) .Account.Emojis}} </bdi> 
 				<div class="more-container">
 					<div class="remote-link">
 						{{if .IDNumbers}}#{{index .IDNumbers .ID}}{{end}} {{.Visibility}}

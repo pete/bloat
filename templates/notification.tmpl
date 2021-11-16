@@ -31,7 +31,7 @@
 				<a class="nav-link" href="/user/{{.Account.ID}}">
 					<span class="status-uname"> {{.Account.Acct}} </span>
 				</a>
-				<bdi class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </bdi>
+				<bdi class="status-dname"> {{EmojiFilter (html .Account.DisplayName) .Account.Emojis}} </bdi>  
 				<span class="notification-text"> followed you -
 					<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
 				</span>
@@ -51,7 +51,7 @@
 		</div>
 		<div class="notification-follow">
 			<div class="notification-info-text">
-				<bdi class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </bdi>  
+				<bdi class="status-dname"> {{EmojiFilter (html .Account.DisplayName) .Account.Emojis}} </bdi>  
 				<span class="notification-text"> wants to follow you - 
 					<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
 				</span>
@@ -98,7 +98,6 @@
 		<a class="nav-link" href="/user/{{.Account.ID}}">
 			<span class="status-uname"> {{.Account.Acct}} </span>
 		</a>
-		<bdi class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </bdi>
 		<span class="notification-text"> liked your post - 
 			<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
 		</span>

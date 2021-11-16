@@ -12,6 +12,7 @@
 				<span class="status-uname"> {{.User.Acct}} </span>
 			</a>
 			<bdi class="status-dname"> {{EmojiFilter .User.DisplayName .User.Emojis}} </bdi>  
+			<bdi class="status-dname"> {{EmojiFilter (html .User.DisplayName) .User.Emojis}} </bdi>  
 		</div>
 		<div class="user-info-details-nav">
 			<a class="nav-link" href="/timeline/home" accesskey="1" title="Home timeline (1)">home</a>
