@@ -311,6 +311,63 @@ func (s *service) ThreadPage(c *client, id string, reply bool) (err error) {
 	return s.renderer.Render(rCtx, c, renderer.ThreadPage, data)
 }
 
+func (s *service) QuickReplyPage(c *client, id string) (err error) {
+	status, err := c.GetStatus(ctx, id)
+	if err != nil {
+		return
+	}
+
+	var ancestor *mastodon.Status
+	if status.InReplyToID != nil {
+		ancestor, err = c.GetStatus(ctx, status.InReplyToID.(string))
+		if err != nil {
+			return
+		}
+	}
+
+	var content string
+	if c.Session.UserID != status.Account.ID {
+		content += "@" + status.Account.Acct + " "
+	}
+	for i := range status.Mentions {
+		if status.Mentions[i].ID != c.Session.UserID &&
+			status.Mentions[i].ID != status.Account.ID {
+			content += "@" + status.Mentions[i].Acct + " "
+		}
+	}
+
+	var visibility string
+	isDirect := status.Visibility == "direct"
+	if isDirect || c.Session.Settings.CopyScope {
+		visibility = status.Visibility
+	} else {
+		visibility = c.Session.Settings.DefaultVisibility
+	}
+
+	pctx := model.PostContext{
+		DefaultVisibility: visibility,
+		DefaultFormat:     c.Session.Settings.DefaultFormat,
+		Formats:           s.postFormats,
+		ReplyContext: &model.ReplyContext{
+			InReplyToID:     id,
+			InReplyToName:   status.Account.Acct,
+			QuickReply:      true,
+			ReplyContent:    content,
+			ForceVisibility: isDirect,
+		},
+	}
+
+	commonData := s.getCommonData(c, "post by "+status.Account.DisplayName)
+	data := &renderer.QuickReplyData{
+		Ancestor:    ancestor,
+		Status:      status,
+		PostContext: pctx,
+		CommonData:  commonData,
+	}
+	rCtx := getRendererContext(c)
+	return s.renderer.Render(rCtx, c, renderer.QuickReplyPage, data)
+}
+
 func (s *service) LikedByPage(c *client, id string) (err error) {
 	likers, err := c.GetFavouritedBy(ctx, id, nil)
 	if err != nil {

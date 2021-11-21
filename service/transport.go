@@ -208,6 +208,11 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 		return s.ThreadPage(c, id, len(reply) > 1)
 	}, SESSION, HTML)
 
+	quickReplyPage := handle(func(c *client) error {
+		id, _ := mux.Vars(c.Req)["id"]
+		return s.QuickReplyPage(c, id)
+	}, SESSION, HTML)
+
 	likedByPage := handle(func(c *client) error {
 		id, _ := mux.Vars(c.Req)["id"]
 		return s.LikedByPage(c, id)
@@ -299,15 +304,22 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 		visibility := c.Req.FormValue("visibility")
 		isNSFW := c.Req.FormValue("is_nsfw") == "on"
 		files := c.Req.MultipartForm.File["attachments"]
+		quickReply := c.Req.FormValue("quickreply") == "true"
 
 		id, err := s.Post(c, content, replyToID, format, visibility, isNSFW, files)
 		if err != nil {
 			return err
 		}
 
-		location := c.Req.FormValue("referrer")
+		var location string
 		if len(replyToID) > 0 {
-			location = "/thread/" + replyToID + "#status-" + id
+			if quickReply {
+				location = "/quickreply/" + id + "#status-" + id
+			} else {
+				location = "/thread/" + replyToID + "#status-" + id
+			}
+		} else {
+			location = c.Req.FormValue("referrer")
 		}
 		redirect(c, location)
 		return nil
@@ -640,6 +652,7 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 	r.HandleFunc("/timeline/{type}", timelinePage).Methods(http.MethodGet)
 	r.HandleFunc("/timeline", defaultTimelinePage).Methods(http.MethodGet)
 	r.HandleFunc("/thread/{id}", threadPage).Methods(http.MethodGet)
+	r.HandleFunc("/quickreply/{id}", quickReplyPage).Methods(http.MethodGet)
 	r.HandleFunc("/likedby/{id}", likedByPage).Methods(http.MethodGet)
 	r.HandleFunc("/retweetedby/{id}", retweetedByPage).Methods(http.MethodGet)
 	r.HandleFunc("/notifications", notificationsPage).Methods(http.MethodGet)
