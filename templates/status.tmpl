@@ -199,6 +199,12 @@
 					</a>
 				</div>
 				<div class="status-action">
+					<a href="/quickreply/{{.ID}}#status-{{.ID}}">
+						quick
+					</a>
+				</div>
+
+				<div class="status-action">
 					{{if or (eq .Visibility "private") (eq .Visibility "direct")}}
 					<a class="status-retweet" href="" title="this status cannot be retweeted"> 
 						retweet
