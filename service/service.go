@@ -299,7 +299,7 @@ func (s *service) ThreadPage(c *client, id string, reply bool) (err error) {
 		addToReplyMap(replies, statuses[i].InReplyToID, statuses[i].ID, i+1)
 	}
 
-	commonData := s.getCommonData(c, "post by "+status.Account.DisplayName)
+	commonData := s.getCommonData(c, "post by "+status.Account.Acct)
 	data := &renderer.ThreadData{
 		Statuses:    statuses,
 		PostContext: postContext,
@@ -357,7 +357,7 @@ func (s *service) QuickReplyPage(c *client, id string) (err error) {
 		},
 	}
 
-	commonData := s.getCommonData(c, "post by "+status.Account.DisplayName)
+	commonData := s.getCommonData(c, "post by "+status.Account.Acct)
 	data := &renderer.QuickReplyData{
 		Ancestor:    ancestor,
 		Status:      status,
@@ -571,7 +571,7 @@ func (s *service) UserPage(c *client, id string, pageType string,
 		}
 	}
 
-	commonData := s.getCommonData(c, user.DisplayName)
+	commonData := s.getCommonData(c, user.Acct)
 	data := &renderer.UserData{
 		User:       user,
 		IsCurrent:  isCurrent,
