@@ -198,11 +198,6 @@
 						{{end}}
 					</a>
 				</div>
-				<div class="status-action">
-					<a href="/quickreply/{{.ID}}#status-{{.ID}}">
-						quick
-					</a>
-				</div>
 
 				<div class="status-action">
 					{{if or (eq .Visibility "private") (eq .Visibility "direct")}}
@@ -237,6 +232,11 @@
 							{{end}}
 						</a>
 					</form>
+				</div>
+				<div class="status-action">
+					<a href="/quickreply/{{.ID}}#status-{{.ID}}">
+						quick
+					</a>
 				</div>
 				<div class="status-action status-action-last">
 					<a class="status-time" href="{{if not .ShowReplies}}/thread/{{.ID}}{{end}}#status-{{.ID}}"
