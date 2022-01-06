@@ -49,7 +49,7 @@ func emojiFilter(content string, emojis []mastodon.Emoji) string {
 	return strings.NewReplacer(replacements...).Replace(content)
 }
 
-var quoteRE = regexp.MustCompile("(?mU)&gt;.*(<br>|<br/>|<br />|$)")
+var quoteRE = regexp.MustCompile("(?mU)(^|<br */?>|\n)&gt;.*(<br */?>|$)")
 
 func statusContentFilter(spoiler string, content string,
 	emojis []mastodon.Emoji, mentions []mastodon.Mention) string {
