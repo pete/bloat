@@ -12,10 +12,11 @@
 	<div class="user-profile-details-container">
 		<div>
 			<span class="status-uname"> {{.User.Acct}} </span>
-			<bdi class="status-dname"> {{EmojiFilter (html .User.DisplayName) .User.Emojis}} </bdi>  
 			<a class="remote-link" href="{{.User.URL}}" target="_blank" title="remote profile">
 				source
 			</a>
+			<br>
+			<bdi class="status-dname"> {{EmojiFilter (html .User.DisplayName) .User.Emojis}} </bdi>  
 		</div>
 		{{if not .IsCurrent}}
 		<div>
