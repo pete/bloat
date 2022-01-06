@@ -3,6 +3,7 @@ package renderer
 import (
 	"fmt"
 	"io"
+	"regexp"
 	"strconv"
 	"strings"
 	"text/template"
@@ -48,6 +49,8 @@ func emojiFilter(content string, emojis []mastodon.Emoji) string {
 	return strings.NewReplacer(replacements...).Replace(content)
 }
 
+var quoteRE = regexp.MustCompile("(?mU)&gt;.*(<br>|<br/>|<br />|$)")
+
 func statusContentFilter(spoiler string, content string,
 	emojis []mastodon.Emoji, mentions []mastodon.Mention) string {
 
@@ -56,6 +59,7 @@ func statusContentFilter(spoiler string, content string,
 	if len(spoiler) > 0 {
 		content = spoiler + "<br />" + content
 	}
+	content = quoteRE.ReplaceAllString(content, "<span class=\"quote\">$0</span>")
 	for _, e := range emojis {
 		r = fmt.Sprintf("<img class=\"emoji\" src=\"%s\" alt=\":%s:\" title=\":%s:\" height=\"32\" />",
 			e.URL, e.ShortCode, e.ShortCode)

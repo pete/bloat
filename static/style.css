@@ -580,6 +580,10 @@ kbd {
 	font-size: 10pt;
 }
 
+.quote {
+	color: #789922;
+}
+
 .dark {
 	background-color: #222222;
 	background-image: none;
