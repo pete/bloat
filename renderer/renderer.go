@@ -59,7 +59,7 @@ func statusContentFilter(spoiler string, content string,
 	if len(spoiler) > 0 {
 		content = spoiler + "<br />" + content
 	}
-	content = quoteRE.ReplaceAllString(content, "$1<div class=\"quote\">$2</span>$3")
+	content = quoteRE.ReplaceAllString(content, "$1<div class=\"quote\">$2</div>$3")
 	for _, e := range emojis {
 		r = fmt.Sprintf("<img class=\"emoji\" src=\"%s\" alt=\":%s:\" title=\":%s:\" height=\"32\" />",
 			e.URL, e.ShortCode, e.ShortCode)
