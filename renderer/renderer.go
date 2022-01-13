@@ -77,7 +77,7 @@ func statusContentFilter(spoiler string, content string,
 		replacements = append(replacements, `"`+m.URL+`"`, `"/user/`+m.ID+`" title="`+m.Acct+`"`)
 	}
 	if len(extraTags) > 0 {
-		content = `<span class=\"extra-tags\">` + extraTags + `</span> ` + content
+		content = `<span class="extra-tags">` + extraTags + `</span> ` + content
 	}
 	return strings.NewReplacer(replacements...).Replace(content)
 }
