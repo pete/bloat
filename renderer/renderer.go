@@ -55,6 +55,7 @@ func statusContentFilter(spoiler string, content string,
 	emojis []mastodon.Emoji, mentions []mastodon.Mention) string {
 
 	var replacements []string
+	var extraTags    string
 	var r string
 	if len(spoiler) > 0 {
 		content = spoiler + "<br />" + content
@@ -66,7 +67,17 @@ func statusContentFilter(spoiler string, content string,
 		replacements = append(replacements, ":"+e.ShortCode+":", r)
 	}
 	for _, m := range mentions {
-		replacements = append(replacements, `"`+m.URL+`"`, `"/user/`+m.ID+`" title="@`+m.Acct+`"`)
+		if !strings.Contains(content, m.URL) {
+			extraTags += `<a class="u-url mention" ` +
+				`data-user="` + m.ID + `" ` +
+				`href="/user/` + m.ID + `" ` +
+				`title="` + m.Acct + `" rel="ugc"> ` +
+				m.Acct + `</a>`
+		}
+		replacements = append(replacements, `"`+m.URL+`"`, `"/user/`+m.ID+`" title="`+m.Acct+`"`)
+	}
+	if len(extraTags) > 0 {
+		content = `<span class=\"extra-tags\">` + extraTags + `</span> ` + content
 	}
 	return strings.NewReplacer(replacements...).Replace(content)
 }
