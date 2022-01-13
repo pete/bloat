@@ -72,7 +72,7 @@ func statusContentFilter(spoiler string, content string,
 				`data-user="` + m.ID + `" ` +
 				`href="/user/` + m.ID + `" ` +
 				`title="` + m.Acct + `" rel="ugc"> ` +
-				m.Acct + `</a>`
+				m.Acct + `</a> `
 		}
 		replacements = append(replacements, `"`+m.URL+`"`, `"/user/`+m.ID+`" title="`+m.Acct+`"`)
 	}
