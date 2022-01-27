@@ -11,7 +11,7 @@
 	</div>
 	<div class="user-profile-details-container">
 		<div>
-			<bdi class="status-dname"> {{EmojiFilter .User.DisplayName .User.Emojis}} </bdi>  
+			<bdi class="status-dname"> {{EmojiFilter (html .User.DisplayName) .User.Emojis}} </bdi>  
 			<span class="status-uname"> @{{.User.Acct}} </span>
 			<a class="remote-link" href="{{.User.URL}}" target="_blank" title="remote profile">
 				source
@@ -82,6 +82,12 @@
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="submit" value="mute" class="btn-link">
+			</form>
+			-
+			<form class="d-inline" action="/mute/{{.User.ID}}?notifications=false" method="post">
+				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
+				<input type="submit" value="mute (keep notifications)" class="btn-link">
 			</form>
 			{{end}}
 			{{if .User.Pleroma.Relationship.Following}} 

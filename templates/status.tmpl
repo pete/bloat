@@ -5,7 +5,7 @@
 		<a class="img-link" href="/user/{{.Account.ID}}">
 			<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="avatar" height="24" />
 		</a>
-		<bdi class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </bdi>  
+		<bdi class="status-dname"> {{EmojiFilter (html .Account.DisplayName) .Account.Emojis}} </bdi>  
 		<a href="/user/{{.Account.ID}}"> 
 			<span class="status-uname"> @{{.Account.Acct}} </span> 
 		</a>
@@ -23,7 +23,7 @@
 		</div>
 		<div class="status"> 
 			<div class="status-name">
-				<bdi class="status-dname"> {{EmojiFilter .Account.DisplayName .Account.Emojis}} </bdi> 
+				<bdi class="status-dname"> {{EmojiFilter (html .Account.DisplayName) .Account.Emojis}} </bdi> 
 				<a href="/user/{{.Account.ID}}">
 					<span class="status-uname"> @{{.Account.Acct}} </span>
 				</a>
@@ -227,8 +227,8 @@
 				<div class="status-action status-action-last">
 					<a class="status-time" href="{{if not .ShowReplies}}/thread/{{.ID}}{{end}}#status-{{.ID}}"
 						{{if $.Ctx.ThreadInNewTab}}target="_blank"{{end}}> 
-						<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}"> 
-							{{TimeSince .CreatedAt}}
+						<time datetime="{{FormatTimeRFC3339 .CreatedAt.Time}}" title="{{FormatTimeRFC822 .CreatedAt.Time}}">
+							{{TimeSince .CreatedAt.Time}}
 						</time> 
 					</a>
 				</div>

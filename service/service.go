@@ -114,7 +114,8 @@ func (s *service) ErrorPage(c *client, err error, retry bool) error {
 	var sessionErr bool
 	if err != nil {
 		errStr = err.Error()
-		if err == errInvalidSession || err == errInvalidCSRFToken {
+		if me, ok := err.(mastodon.Error); ok && me.IsAuthError() ||
+			err == errInvalidSession || err == errInvalidCSRFToken {
 			sessionErr = true
 		}
 	}
@@ -417,18 +418,24 @@ func (s *service) NotificationPage(c *client, maxID string,
 	var nextLink string
 	var unreadCount int
 	var readID string
-	var excludes []string
+	var includes, excludes []string
 	var pg = mastodon.Pagination{
 		MaxID: maxID,
 		MinID: minID,
 		Limit: 20,
 	}
 
+	if c.s.Settings.HideUnsupportedNotifs {
+		// Explicitly include the supported types.
+		// For now, only Pleroma supports this option, Mastadon
+		// will simply ignore the unknown params.
+		includes = []string{"follow", "follow_request", "mention", "reblog", "favourite"}
+	}
 	if c.s.Settings.AntiDopamineMode {
-		excludes = []string{"follow", "favourite", "reblog"}
+		excludes = append(excludes, "follow", "favourite", "reblog")
 	}
 
-	notifications, err := c.GetNotifications(c.ctx, &pg, excludes)
+	notifications, err := c.GetNotifications(c.ctx, &pg, includes, excludes)
 	if err != nil {
 		return
 	}
@@ -914,8 +921,8 @@ func (s *service) Reject(c *client, id string) (err error) {
 	return c.FollowRequestReject(c.ctx, id)
 }
 
-func (s *service) Mute(c *client, id string) (err error) {
-	_, err = c.AccountMute(c.ctx, id)
+func (s *service) Mute(c *client, id string, notifications *bool) (err error) {
+	_, err = c.AccountMute(c.ctx, id, notifications)
 	return
 }
 

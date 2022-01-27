@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,7 +18,7 @@ import (
 )
 
 var (
-	configFile = "/etc/bloat.conf"
+	configFiles = []string{"bloat.conf", "/etc/bloat.conf"}
 )
 
 func errExit(err error) {
@@ -26,19 +27,13 @@ func errExit(err error) {
 }
 
 func main() {
-	opts, _, err := util.Getopts(os.Args, "f:")
-	if err != nil {
-		errExit(err)
-	}
+	configFile := flag.String("f", "", "config file")
+	flag.Parse()
 
-	for _, opt := range opts {
-		switch opt.Option {
-		case 'f':
-			configFile = opt.Value
-		}
+	if len(*configFile) > 0 {
+		configFiles = []string{*configFile}
 	}
-
-	config, err := config.ParseFile(configFile)
+	config, err := config.ParseFiles(configFiles)
 	if err != nil {
 		errExit(err)
 	}
