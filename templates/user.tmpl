@@ -11,7 +11,7 @@
 	</div>
 	<div class="user-profile-details-container">
 		<div>
-			<bdi class="status-dname"> {{EmojiFilter (html .User.DisplayName) .User.Emojis}} </bdi>  
+			<bdi class="status-dname"> {{EmojiFilter (HTML .User.DisplayName) .User.Emojis | Raw}} </bdi>
 			<span class="status-uname"> @{{.User.Acct}} </span>
 			<a class="remote-link" href="{{.User.URL}}" target="_blank" title="remote profile">
 				source
@@ -20,6 +20,7 @@
 		{{if not .IsCurrent}}
 		<div>
 			<span> {{if .User.Pleroma.Relationship.FollowedBy}} follows you - {{end}} </span>  
+			{{if .User.Pleroma.Relationship.BlockedBy}} blocks you - {{end}}
 			{{if .User.Pleroma.Relationship.Following}} 
 			<form class="d-inline" action="/unfollow/{{.User.ID}}" method="post">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
@@ -129,11 +130,15 @@
 		</div>
 	</div>
 	<div class="user-profile-decription">
-	{{EmojiFilter .User.Note .User.Emojis}}
+	{{EmojiFilter .User.Note .User.Emojis | Raw}}
 	</div>
-	{{if .User.Fields}}{{range .User.Fields}}
-	<div>{{.Name}} - {{.Value}}</div>
-	{{end}}{{end}}
+	{{if .User.Fields}}
+	<div class="user-fields">
+		{{range .User.Fields}}
+		<div>{{.Name}} - {{.Value | Raw}}</div>
+		{{end}}
+	</div>
+	{{end}}
 </div>
 </div>
 

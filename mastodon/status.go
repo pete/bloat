@@ -56,7 +56,6 @@ type Status struct {
 	MediaAttachments   []Attachment `json:"media_attachments"`
 	Mentions           []Mention    `json:"mentions"`
 	Tags               []Tag        `json:"tags"`
-	Card               *Card        `json:"card"`
 	Application        Application  `json:"application"`
 	Language           string       `json:"language"`
 	Pinned             interface{}  `json:"pinned"`
@@ -75,22 +74,6 @@ type Status struct {
 type Context struct {
 	Ancestors   []*Status `json:"ancestors"`
 	Descendants []*Status `json:"descendants"`
-}
-
-// Card hold information for mastodon card.
-type Card struct {
-	URL          string `json:"url"`
-	Title        string `json:"title"`
-	Description  string `json:"description"`
-	Image        string `json:"image"`
-	Type         string `json:"type"`
-	AuthorName   string `json:"author_name"`
-	AuthorURL    string `json:"author_url"`
-	ProviderName string `json:"provider_name"`
-	ProviderURL  string `json:"provider_url"`
-	HTML         string `json:"html"`
-	Width        int64  `json:"width"`
-	Height       int64  `json:"height"`
 }
 
 // GetFavourites return the favorite list of the current user.
@@ -121,16 +104,6 @@ func (c *Client) GetStatusContext(ctx context.Context, id string) (*Context, err
 		return nil, err
 	}
 	return &context, nil
-}
-
-// GetStatusCard return status specified by id.
-func (c *Client) GetStatusCard(ctx context.Context, id string) (*Card, error) {
-	var card Card
-	err := c.doAPI(ctx, http.MethodGet, fmt.Sprintf("/api/v1/statuses/%s/card", id), nil, &card, nil)
-	if err != nil {
-		return nil, err
-	}
-	return &card, nil
 }
 
 // GetRebloggedBy returns the account list of the user who reblogged the toot of id.
@@ -301,7 +274,7 @@ func (c *Client) DeleteStatus(ctx context.Context, id string) error {
 }
 
 // Search search content with query.
-func (c *Client) Search(ctx context.Context, q string, qType string, limit int, resolve bool, offset int, accountID string) (*Results, error) {
+func (c *Client) Search(ctx context.Context, q string, qType string, limit int, resolve bool, offset int, accountID string, following bool) (*Results, error) {
 	var results Results
 	params := url.Values{}
 	params.Set("q", q)
@@ -309,6 +282,7 @@ func (c *Client) Search(ctx context.Context, q string, qType string, limit int, 
 	params.Set("limit", fmt.Sprint(limit))
 	params.Set("resolve", fmt.Sprint(resolve))
 	params.Set("offset", fmt.Sprint(offset))
+	params.Set("following", fmt.Sprint(following))
 	if len(accountID) > 0 {
 		params.Set("account_id", accountID)
 	}
