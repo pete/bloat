@@ -4,14 +4,15 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
 	<link rel="icon" type="image/png" href="/static/favicon.png">
+	<link rel="stylesheet" href="/static/style.css">
 	<title>{{.Title}}</title>
 </head>
 <frameset cols="424px,*">
 	<frameset rows="316px,*">
-		<frame name="nav" src="/nav"> 
-		<frame name="notification" src="/notifications"> 
+		<frame name="nav" src="/nav" {{if $.Ctx.DarkMode}}class="dark"{{end}}>
+		<frame name="notification" src="/notifications" {{if $.Ctx.DarkMode}}class="dark"{{end}}>
 	</frameset>
-	<frame name="main" src="/timeline/home"> 
+	<frame name="main" src="/timeline/home" {{if $.Ctx.DarkMode}}class="dark"{{end}}>
 </frameset>
 </html>
 {{end}}
