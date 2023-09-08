@@ -683,7 +683,7 @@ func (s *service) MutePage(c *client, id string) (err error) {
 	if err != nil {
 		return
 	}
-	cdata := s.cdata(c, "Mute"+user.DisplayName+" @"+user.Acct, 0, 0, "")
+	cdata := s.cdata(c, "Mute "+user.DisplayName+" @"+user.Acct, 0, 0, "")
 	data := &renderer.UserData{
 		User:       user,
 		CommonData: cdata,

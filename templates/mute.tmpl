@@ -1,6 +1,6 @@
 {{with .Data}}
 {{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
-<div class="page-title"> Mute {{.User.Acct}} </div>
+<div class="page-title"> Mute {{EmojiFilter (HTML .User.DisplayName) .User.Emojis | Raw}} @{{.User.Acct}} </div>
 
 <form action="/mute/{{.User.ID}}" method="POST">
 	<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
