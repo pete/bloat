@@ -436,7 +436,8 @@ img.emoji {
 
 .user-list-item {
 	overflow: auto;
-	margin: 0 0 12px 0;
+	margin: 0 0 4px 0;
+	padding: 4px;
 	display: flex;
 	align-items: center;
 }
