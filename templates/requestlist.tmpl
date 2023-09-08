@@ -9,9 +9,9 @@
 		</div>
 		<div class="user-list-name">
 			<div>
-				<div class="status-dname"> {{EmojiFilter (HTML .DisplayName) .Emojis | Raw}} </div>
+				<div class="status-dname">{{EmojiFilter (HTML .DisplayName) .Emojis | Raw}}</div>
 				<a class="img-link" href="/user/{{.ID}}">
-					<div class="status-uname"> @{{.Acct}} </div>
+					<div class="status-uname">{{.Acct}}</div>
 				</a>
 			</div>
 			<form class="d-inline" action="/accept/{{.ID}}" method="post" target="_self">

@@ -5,9 +5,9 @@
 		<a class="img-link" href="/user/{{.Account.ID}}">
 			<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="avatar" height="24" />
 		</a>
-		<bdi class="status-dname"> {{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}} </bdi>
+		<bdi class="status-dname">{{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}}</bdi>
 		<a href="/user/{{.Account.ID}}"> 
-			<span class="status-uname"> @{{.Account.Acct}} </span> 
+			<span class="status-uname">@{{.Account.Acct}}</span> 
 		</a>
 		retweeted
 	</div>
@@ -23,9 +23,9 @@
 		</div>
 		<div class="status"> 
 			<div class="status-name">
-				<bdi class="status-dname"> {{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}} </bdi>
+				<bdi class="status-dname">{{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}}</bdi>
 				<a href="/user/{{.Account.ID}}">
-					<span class="status-uname"> @{{.Account.Acct}} </span>
+					<span class="status-uname">@{{.Account.Acct}}</span>
 				</a>
 				<div class="more-container">
 					<div class="remote-link">
@@ -92,8 +92,8 @@
 			</div>
 			{{if (or .Content .SpoilerText)}}
 			<div class="status-content">
-				{{if .SpoilerText}}{{EmojiFilter (HTML .SpoilerText) .Emojis | Raw}}<br/>{{end}}
-				{{StatusContentFilter .Content .Emojis .Mentions | Raw}}
+				{{- if .SpoilerText}}{{EmojiFilter (HTML .SpoilerText) .Emojis | Raw}}<br/>{{end -}}
+				{{- StatusContentFilter .Content .Emojis .Mentions | Raw -}}
 			</div>
 			{{end}}
 			{{if .MediaAttachments}}

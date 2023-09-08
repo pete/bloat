@@ -28,13 +28,13 @@
 		</div>
 		<div class="notification-follow">
 			<div class="notification-info-text">
-				<bdi class="status-dname"> {{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}} </bdi>
+				<bdi class="status-dname">{{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}}</bdi>
 				<span class="notification-text"> followed you - 
 					<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
 				</span>
 			</div>
 			<div>
-				<a href="/user/{{.Account.ID}}"> <span class="status-uname"> @{{.Account.Acct}} </span> </a>
+				<a href="/user/{{.Account.ID}}"> <span class="status-uname">@{{.Account.Acct}}</span> </a>
 			</div>
 		</div>
 	</div>
@@ -48,13 +48,13 @@
 		</div>
 		<div class="notification-follow">
 			<div class="notification-info-text">
-				<bdi class="status-dname"> {{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}} </bdi>
+				<bdi class="status-dname">{{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}}</bdi>
 				<span class="notification-text"> wants to follow you - 
 					<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
 				</span>
 			</div>
 			<div>
-				<a href="/user/{{.Account.ID}}"> <span class="status-uname"> @{{.Account.Acct}} </span> </a>
+				<a href="/user/{{.Account.ID}}"><span class="status-uname">@{{.Account.Acct}}</span></a>
 			</div>
 			<form class="d-inline" action="/accept/{{.Account.ID}}" method="post" target="_self">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
@@ -79,7 +79,7 @@
 			<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="avatar" height="48" />
 		</a>
 		<a href="/user/{{.Account.ID}}">
-			<span class="status-uname"> @{{.Account.Acct}} </span>
+			<span class="status-uname">@{{.Account.Acct}}</span>
 		</a>
 		<span class="notification-text"> retweeted your post - 
 			<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
@@ -93,7 +93,7 @@
 			<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="avatar" height="48" />
 		</a>
 		<a href="/user/{{.Account.ID}}">
-			<span class="status-uname"> @{{.Account.Acct}} </span>
+			<span class="status-uname">@{{.Account.Acct}}</span>
 		</a>
 		<span class="notification-text"> liked your post - 
 			<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
@@ -107,7 +107,7 @@
 			<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="avatar" height="48" />
 		</a>
 		<a href="/user/{{.Account.ID}}">
-			<span class="status-uname"> @{{.Account.Acct}} </span>
+			<span class="status-uname">@{{.Account.Acct}}</span>
 		</a>
 		<span class="notification-text"> {{.Type}} - 
 			<time datetime="{{FormatTimeRFC3339 .CreatedAt}}" title="{{FormatTimeRFC822 .CreatedAt}}">{{TimeSince .CreatedAt}}</time> 
