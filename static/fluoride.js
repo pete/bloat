@@ -285,6 +285,12 @@ function onPaste(e) {
 	fp.files = dt.files;
 }
 
+function onKeydown(e) {
+	if (e.key == 'Enter' && e.ctrlKey) {
+		document.querySelector(".post-form").submit();
+	}
+}
+
 document.addEventListener("DOMContentLoaded", function() { 
 	checkCSRFToken();
 	checkAntiDopamineMode();
@@ -325,8 +331,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	var pf = document.querySelector(".post-form")
-	if (pf)
+	if (pf) {
 		pf.addEventListener("paste", onPaste);
+		pf.addEventListener("keydown", onKeydown);
+	}
 });
 
 // @license-end
