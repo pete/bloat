@@ -20,7 +20,6 @@ type config struct {
 	TemplatesPath   string
 	CustomCSS       string
 	PostFormats     []model.PostFormat
-	LogFile         string
 }
 
 func (c *config) IsValid() bool {
@@ -97,7 +96,7 @@ func Parse(r io.Reader) (c *config, err error) {
 			}
 			c.PostFormats = formats
 		case "log_file":
-			c.LogFile = val
+			// ignore
 		default:
 			return nil, errors.New("invalid config key " + key)
 		}

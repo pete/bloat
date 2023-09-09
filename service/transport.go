@@ -23,7 +23,7 @@ const (
 	CSRF
 )
 
-func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
+func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 	r := mux.NewRouter()
 
 	writeError := func(c *client, err error, t int, retry bool) {
@@ -48,10 +48,12 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 				r:   req,
 			}
 
-			defer func(begin time.Time) {
-				logger.Printf("path=%s, err=%v, took=%v\n",
-					req.URL.Path, err, time.Since(begin))
-			}(time.Now())
+			if verbose {
+				defer func(begin time.Time) {
+					log.Printf("path=%s, err=%v, took=%v\n",
+						req.URL.Path, err, time.Since(begin))
+				}(time.Now())
+			}
 
 			var ct string
 			switch rt {

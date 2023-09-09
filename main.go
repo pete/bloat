@@ -26,6 +26,7 @@ func errExit(err error) {
 
 func main() {
 	configFile := flag.String("f", "", "config file")
+	verbose := flag.Bool("v", false, "verbose mode")
 	flag.Parse()
 
 	if len(*configFile) > 0 {
@@ -52,25 +53,12 @@ func main() {
 		customCSS = "/static/" + customCSS
 	}
 
-	var logger *log.Logger
-	if len(config.LogFile) < 1 {
-		logger = log.New(os.Stdout, "", log.LstdFlags)
-	} else {
-		lf, err := os.OpenFile(config.LogFile,
-			os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-		if err != nil {
-			errExit(err)
-		}
-		defer lf.Close()
-		logger = log.New(lf, "", log.LstdFlags)
-	}
-
 	s := service.NewService(config.ClientName, config.ClientScope,
 		config.ClientWebsite, customCSS, config.SingleInstance,
 		config.PostFormats, renderer)
-	handler := service.NewHandler(s, logger, config.StaticDirectory)
+	handler := service.NewHandler(s, *verbose, config.StaticDirectory)
 
-	logger.Println("listening on", config.ListenAddress)
+	log.Println("listening on", config.ListenAddress)
 	err = http.ListenAndServe(config.ListenAddress, handler)
 	if err != nil {
 		errExit(err)
