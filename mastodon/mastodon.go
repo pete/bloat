@@ -163,12 +163,13 @@ func (c *Client) doAPI(ctx context.Context, method string, uri string, params in
 		}
 	}
 	return json.NewDecoder(resp.Body).Decode(&res)
+
 }
 
 // NewClient return new mastodon API client.
 func NewClient(config *Config) *Client {
 	return &Client{
-		Client: http.DefaultClient,
+		Client: httpClient,
 		config: config,
 	}
 }

@@ -11,7 +11,6 @@ import (
 
 // AppConfig is a setting for registering applications.
 type AppConfig struct {
-	http.Client
 	Server     string
 	ClientName string
 
@@ -62,7 +61,7 @@ func RegisterApp(ctx context.Context, appConfig *AppConfig) (*Application, error
 	}
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	resp, err := appConfig.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
