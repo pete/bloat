@@ -1,4 +1,6 @@
 # github.com/gorilla/mux v1.7.3
+## explicit
 github.com/gorilla/mux
 # github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80
+## explicit
 github.com/tomnomnom/linkheader
