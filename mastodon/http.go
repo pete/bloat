@@ -37,5 +37,5 @@ var httpClient = &http.Client{
 	Transport: &transport{
 		t: http.DefaultTransport,
 	},
-	Timeout: 30 * time.Second,
+	Timeout: 90 * time.Second,
 }
