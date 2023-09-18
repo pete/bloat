@@ -64,7 +64,7 @@ func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 			}
 			c.w.Header().Add("Content-Type", ct)
 
-			err = c.authenticate(at)
+			err = c.authenticate(at, s.instance)
 			if err != nil {
 				writeError(c, err, rt, req.Method == http.MethodGet)
 				return
@@ -79,7 +79,7 @@ func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 	}
 
 	rootPage := handle(func(c *client) error {
-		err := c.authenticate(SESSION)
+		err := c.authenticate(SESSION, "")
 		if err != nil {
 			if err == errInvalidSession {
 				c.redirect("/signin")

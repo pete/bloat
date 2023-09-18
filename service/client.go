@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strings"
 	"time"
@@ -68,7 +69,7 @@ func (c *client) redirect(url string) {
 	c.w.WriteHeader(http.StatusFound)
 }
 
-func (c *client) authenticate(t int) (err error) {
+func (c *client) authenticate(t int, instance string) (err error) {
 	csrf := c.r.FormValue("csrf_token")
 	ref := c.r.URL.RequestURI()
 	defer func() {
@@ -98,6 +99,9 @@ func (c *client) authenticate(t int) (err error) {
 		return err
 	}
 	c.s = sess
+	if len(instance) > 0 && c.s.Instance != instance {
+		return errors.New("invalid instance")
+	}
 	c.Client = mastodon.NewClient(&mastodon.Config{
 		Server:       "https://" + c.s.Instance,
 		ClientID:     c.s.ClientID,
