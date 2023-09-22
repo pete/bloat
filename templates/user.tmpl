@@ -127,7 +127,7 @@
 	{{EmojiFilter .User.Note .User.Emojis}}
 	</div>
 	{{if .User.Fields}}{{range .User.Fields}}
-	<div>{{.Name}} - {{.Value}}</div>
+	<div>{{(html .Name)}} - {{(html .Value)}}</div>
 	{{end}}{{end}}
 </div>
 </div>
