@@ -9,15 +9,19 @@ import (
 
 type lr struct {
 	io.ReadCloser
+	n int64
 	r *http.Request
 }
 
 func (r *lr) Read(p []byte) (n int, err error) {
-	n, err = r.ReadCloser.Read(p)
-	// override the generic error returned by the MaxBytesReader
-	if _, ok := err.(*http.MaxBytesError); ok {
-		err = fmt.Errorf("%s \"%s\": response body too large", r.r.Method, r.r.URL)
+	if r.n <= 0 {
+		return 0, fmt.Errorf("%s \"%s\": response body too large", r.r.Method, r.r.URL)
 	}
+	if int64(len(p)) > r.n {
+		p = p[0:r.n]
+	}
+	n, err = r.ReadCloser.Read(p)
+	r.n -= int64(n)
 	return
 }
 
@@ -28,7 +32,7 @@ type transport struct {
 func (t *transport) RoundTrip(r *http.Request) (*http.Response, error) {
 	resp, err := t.t.RoundTrip(r)
 	if resp != nil && resp.Body != nil {
-		resp.Body = &lr{http.MaxBytesReader(nil, resp.Body, 8<<20), r}
+		resp.Body = &lr{resp.Body, 8 << 20, r}
 	}
 	return resp, err
 }
