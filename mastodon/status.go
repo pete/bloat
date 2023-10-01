@@ -1,12 +1,14 @@
 package mastodon
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"time"
 )
 
@@ -293,30 +295,35 @@ func (c *Client) Search(ctx context.Context, q string, qType string, limit int, 
 	return &results, nil
 }
 
-// UploadMedia upload a media attachment from a file.
-func (c *Client) UploadMedia(ctx context.Context, file string) (*Attachment, error) {
-	var attachment Attachment
-	err := c.doAPI(ctx, http.MethodPost, "/api/v1/media", file, &attachment, nil)
-	if err != nil {
-		return nil, err
-	}
-	return &attachment, nil
-}
-
-// UploadMediaFromReader uploads a media attachment from a io.Reader.
-func (c *Client) UploadMediaFromReader(ctx context.Context, reader io.Reader) (*Attachment, error) {
-	var attachment Attachment
-	err := c.doAPI(ctx, http.MethodPost, "/api/v1/media", reader, &attachment, nil)
-	if err != nil {
-		return nil, err
-	}
-	return &attachment, nil
-}
-
-// UploadMediaFromReader uploads a media attachment from a io.Reader.
 func (c *Client) UploadMediaFromMultipartFileHeader(ctx context.Context, fh *multipart.FileHeader) (*Attachment, error) {
+	f, err := fh.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	var buf bytes.Buffer
+	mw := multipart.NewWriter(&buf)
+	fname := filepath.Base(fh.Filename)
+	err = mw.WriteField("description", fname)
+	if err != nil {
+		return nil, err
+	}
+	part, err := mw.CreateFormFile("file", fname)
+	if err != nil {
+		return nil, err
+	}
+	_, err = io.Copy(part, f)
+	if err != nil {
+		return nil, err
+	}
+	err = mw.Close()
+	if err != nil {
+		return nil, err
+	}
+	params := &multipartRequest{Data: &buf, ContentType: mw.FormDataContentType()}
 	var attachment Attachment
-	err := c.doAPI(ctx, http.MethodPost, "/api/v1/media", fh, &attachment, nil)
+	err = c.doAPI(ctx, http.MethodPost, "/api/v1/media", params, &attachment, nil)
 	if err != nil {
 		return nil, err
 	}

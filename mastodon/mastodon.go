@@ -2,18 +2,14 @@
 package mastodon
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"net/url"
-	"os"
 	"path"
-	"path/filepath"
 	"strings"
 
 	"github.com/tomnomnom/linkheader"
@@ -61,83 +57,6 @@ func (c *Client) doAPI(ctx context.Context, method string, uri string, params in
 		if err != nil {
 			return err
 		}
-	} else if file, ok := params.(string); ok {
-		f, err := os.Open(file)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-
-		var buf bytes.Buffer
-		mw := multipart.NewWriter(&buf)
-		part, err := mw.CreateFormFile("file", filepath.Base(file))
-		if err != nil {
-			return err
-		}
-		_, err = io.Copy(part, f)
-		if err != nil {
-			return err
-		}
-		err = mw.Close()
-		if err != nil {
-			return err
-		}
-		req, err = http.NewRequest(method, u.String(), &buf)
-		if err != nil {
-			return err
-		}
-		ct = mw.FormDataContentType()
-	} else if file, ok := params.(*multipart.FileHeader); ok {
-		f, err := file.Open()
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-
-		var buf bytes.Buffer
-		mw := multipart.NewWriter(&buf)
-		fname := filepath.Base(file.Filename)
-		err = mw.WriteField("description", fname)
-		if err != nil {
-			return err
-		}
-		part, err := mw.CreateFormFile("file", fname)
-		if err != nil {
-			return err
-		}
-		_, err = io.Copy(part, f)
-		if err != nil {
-			return err
-		}
-		err = mw.Close()
-		if err != nil {
-			return err
-		}
-		req, err = http.NewRequest(method, u.String(), &buf)
-		if err != nil {
-			return err
-		}
-		ct = mw.FormDataContentType()
-	} else if reader, ok := params.(io.Reader); ok {
-		var buf bytes.Buffer
-		mw := multipart.NewWriter(&buf)
-		part, err := mw.CreateFormFile("file", "upload")
-		if err != nil {
-			return err
-		}
-		_, err = io.Copy(part, reader)
-		if err != nil {
-			return err
-		}
-		err = mw.Close()
-		if err != nil {
-			return err
-		}
-		req, err = http.NewRequest(method, u.String(), &buf)
-		if err != nil {
-			return err
-		}
-		ct = mw.FormDataContentType()
 	} else if mr, ok := params.(*multipartRequest); ok {
 		req, err = http.NewRequest(method, u.String(), mr.Data)
 		if err != nil {
