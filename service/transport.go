@@ -2,11 +2,14 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 	"time"
 
+	"bloat/mastodon"
 	"bloat/model"
 
 	"github.com/gorilla/mux"
@@ -201,6 +204,57 @@ func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 	filtersPage := handle(func(c *client) error {
 		return s.FiltersPage(c)
 	}, SESSION, HTML)
+
+	profilePage := handle(func(c *client) error {
+		return s.ProfilePage(c)
+	}, SESSION, HTML)
+
+	profileUpdate := handle(func(c *client) error {
+		name := c.r.FormValue("name")
+		bio := c.r.FormValue("bio")
+		var avatar, banner *multipart.FileHeader
+		if f := c.r.MultipartForm.File["avatar"]; len(f) > 0 {
+			avatar = f[0]
+		}
+		if f := c.r.MultipartForm.File["banner"]; len(f) > 0 {
+			banner = f[0]
+		}
+		var fields []mastodon.Field
+		for i := 0; i < 16; i++ {
+			n := c.r.FormValue(fmt.Sprintf("field-name-%d", i))
+			v := c.r.FormValue(fmt.Sprintf("field-value-%d", i))
+			if len(n) == 0 {
+				continue
+			}
+			f := mastodon.Field{Name: n, Value: v}
+			fields = append(fields, f)
+		}
+		locked := c.r.FormValue("locked") == "true"
+		err := s.ProfileUpdate(c, name, bio, avatar, banner, fields, locked)
+		if err != nil {
+			return err
+		}
+		c.redirect("/")
+		return nil
+	}, CSRF, HTML)
+
+	profileDelAvatar := handle(func(c *client) error {
+		err := s.ProfileDelAvatar(c)
+		if err != nil {
+			return err
+		}
+		c.redirect(c.r.FormValue("referrer"))
+		return nil
+	}, CSRF, HTML)
+
+	profileDelBanner := handle(func(c *client) error {
+		err := s.ProfileDelBanner(c)
+		if err != nil {
+			return err
+		}
+		c.redirect(c.r.FormValue("referrer"))
+		return nil
+	}, CSRF, HTML)
 
 	signin := handle(func(c *client) error {
 		instance := c.r.FormValue("instance")
@@ -682,6 +736,10 @@ func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 	r.HandleFunc("/search", searchPage).Methods(http.MethodGet)
 	r.HandleFunc("/settings", settingsPage).Methods(http.MethodGet)
 	r.HandleFunc("/filters", filtersPage).Methods(http.MethodGet)
+	r.HandleFunc("/profile", profilePage).Methods(http.MethodGet)
+	r.HandleFunc("/profile", profileUpdate).Methods(http.MethodPost)
+	r.HandleFunc("/profile/delavatar", profileDelAvatar).Methods(http.MethodPost)
+	r.HandleFunc("/profile/delbanner", profileDelBanner).Methods(http.MethodPost)
 	r.HandleFunc("/signin", signin).Methods(http.MethodPost)
 	r.HandleFunc("/oauth_callback", oauthCallback).Methods(http.MethodGet)
 	r.HandleFunc("/post", post).Methods(http.MethodPost)

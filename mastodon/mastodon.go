@@ -33,6 +33,11 @@ type Client struct {
 	config *Config
 }
 
+type multipartRequest struct {
+	Data        io.Reader
+	ContentType string
+}
+
 func (c *Client) doAPI(ctx context.Context, method string, uri string, params interface{}, res interface{}, pg *Pagination) error {
 	u, err := url.Parse(c.config.Server)
 	if err != nil {
@@ -133,6 +138,12 @@ func (c *Client) doAPI(ctx context.Context, method string, uri string, params in
 			return err
 		}
 		ct = mw.FormDataContentType()
+	} else if mr, ok := params.(*multipartRequest); ok {
+		req, err = http.NewRequest(method, u.String(), mr.Data)
+		if err != nil {
+			return err
+		}
+		ct = mr.ContentType
 	} else {
 		if method == http.MethodGet && pg != nil {
 			u.RawQuery = pg.toValues().Encode()

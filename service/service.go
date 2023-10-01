@@ -774,6 +774,55 @@ func (svc *service) FiltersPage(c *client) (err error) {
 	return svc.renderer.Render(c.rctx, c.w, renderer.FiltersPage, data)
 }
 
+func (svc *service) ProfilePage(c *client) (err error) {
+	u, err := c.GetAccountCurrentUser(c.ctx)
+	if err != nil {
+		return
+	}
+	// Some instances allow more than 4 fields, but make sure that there are
+	// at least 4 fields in the slice because the template depends on it.
+	if u.Source.Fields == nil {
+		u.Source.Fields = new([]mastodon.Field)
+	}
+	for len(*u.Source.Fields) < 4 {
+		*u.Source.Fields = append(*u.Source.Fields, mastodon.Field{})
+	}
+	cdata := svc.cdata(c, "edit profile", 0, 0, "")
+	data := &renderer.ProfileData{
+		CommonData: cdata,
+		User:       u,
+	}
+	return svc.renderer.Render(c.rctx, c.w, renderer.ProfilePage, data)
+}
+
+func (s *service) ProfileUpdate(c *client, name, bio string, avatar, banner *multipart.FileHeader,
+	fields []mastodon.Field, locked bool) (err error) {
+	// Need to pass empty data to clear fields
+	if len(fields) == 0 {
+		fields = append(fields, mastodon.Field{})
+	}
+	p := &mastodon.Profile{
+		DisplayName: &name,
+		Note:        &bio,
+		Avatar:      avatar,
+		Header:      banner,
+		Fields:      &fields,
+		Locked:      &locked,
+	}
+	_, err = c.AccountUpdate(c.ctx, p)
+	return err
+}
+
+func (s *service) ProfileDelAvatar(c *client) (err error) {
+	_, err = c.AccountDeleteAvatar(c.ctx)
+	return
+}
+
+func (s *service) ProfileDelBanner(c *client) (err error) {
+	_, err = c.AccountDeleteHeader(c.ctx)
+	return err
+}
+
 func (s *service) SingleInstance() (instance string, ok bool) {
 	if len(s.instance) > 0 {
 		instance = s.instance

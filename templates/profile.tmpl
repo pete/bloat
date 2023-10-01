@@ -1,0 +1,58 @@
+{{with .Data}}
+{{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
+<div class="page-title"> Edit Profile </div>
+
+<form class="profile-form" action="/profile" method="POST" enctype="multipart/form-data">
+	<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+	<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
+	<div class="profile-form-field">
+		<div class="block-label">
+			<label for="avatar">Avatar</label> -
+			<input class="btn-link" type="submit" formaction="/profile/delavatar" formmethod="POST" value="delete">
+		</div>
+		<div>
+			<a href="{{.User.Avatar}}" target="_blank">
+				<img class="profile-avatar" src="{{.User.Avatar}}" alt="profile-avatar" height="96">
+			</a>
+		</div>
+		<div><input id="avatar" name="avatar" type="file"></div>
+	</div>
+	<div class="profile-form-field">
+		<div class="block-label">
+			<label for="banner">Banner</label> -
+			<input class="btn-link" type="submit" formaction="/profile/delbanner" formmethod="POST" value="delete">
+		</div>
+		<div>
+			<a href="{{.User.Header}}" target="_blank">
+				<img class="profile-banner" src="{{.User.Header}}" alt="profile-banner" height="120">
+			</a>
+		</div>
+		<input id="banner" name="banner" type="file">
+	</div>
+	<div class="profile-form-field">
+		<div class="block-label"><label for="name">Name</label></div>
+		<div><input id="name" name="name" type="text" value="{{.User.DisplayName}}"></div>
+	</div>
+	<div class="profile-form-field">
+		<div class="block-label"><label for="bio">Bio</label></div>
+		<textarea id="bio" name="bio" cols="80" rows="8">{{.User.Source.Note}}</textarea>
+	</div>
+	<div class="profile-form-field">
+		<div class="block-label"><label>Metadata</label></div>
+		{{range $i, $f := .User.Source.Fields}}
+		<div class="profile-field">
+			<input id="field-name-{{$i}}" name="field-name-{{$i}}" type="text" value="{{$f.Name}}" placeholder="name">
+			<input id="field-value-{{$i}}" name="field-value-{{$i}}" type="text" value="{{$f.Value}}" placeholder="value">
+		</div>
+		{{end}}
+	</div>
+	<div class="profile-form-field">
+		<input id="locked" name="locked" type="checkbox" value="true" {{if .User.Locked}}checked{{end}}>
+		<label for="locked">Require manual approval of follow requests</label>
+	</div>
+	<button type="submit"> Save </button>
+	<button type="reset"> Reset </button>
+</form>
+
+{{template "footer.tmpl"}}
+{{end}}

@@ -1,10 +1,14 @@
 package mastodon
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -34,6 +38,7 @@ type Account struct {
 	Moved          *Account        `json:"moved"`
 	Fields         []Field         `json:"fields"`
 	Bot            bool            `json:"bot"`
+	Source         *AccountSource  `json:"source"`
 	Pleroma        *AccountPleroma `json:"pleroma"`
 }
 
@@ -95,52 +100,113 @@ type Profile struct {
 	Source      *AccountSource
 
 	// Set the base64 encoded character string of the image.
-	Avatar string
-	Header string
+	Avatar *multipart.FileHeader
+	Header *multipart.FileHeader
 }
 
 // AccountUpdate updates the information of the current user.
 func (c *Client) AccountUpdate(ctx context.Context, profile *Profile) (*Account, error) {
-	params := url.Values{}
+	var buf bytes.Buffer
+	mw := multipart.NewWriter(&buf)
 	if profile.DisplayName != nil {
-		params.Set("display_name", *profile.DisplayName)
+		err := mw.WriteField("display_name", *profile.DisplayName)
+		if err != nil {
+			return nil, err
+		}
 	}
 	if profile.Note != nil {
-		params.Set("note", *profile.Note)
+		err := mw.WriteField("note", *profile.Note)
+		if err != nil {
+			return nil, err
+		}
 	}
 	if profile.Locked != nil {
-		params.Set("locked", strconv.FormatBool(*profile.Locked))
+		err := mw.WriteField("locked", strconv.FormatBool(*profile.Locked))
+		if err != nil {
+			return nil, err
+		}
 	}
 	if profile.Fields != nil {
 		for idx, field := range *profile.Fields {
-			params.Set(fmt.Sprintf("fields_attributes[%d][name]", idx), field.Name)
-			params.Set(fmt.Sprintf("fields_attributes[%d][value]", idx), field.Value)
+			err := mw.WriteField(fmt.Sprintf("fields_attributes[%d][name]", idx), field.Name)
+			if err != nil {
+				return nil, err
+			}
+			err = mw.WriteField(fmt.Sprintf("fields_attributes[%d][value]", idx), field.Value)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
-	if profile.Source != nil {
-		if profile.Source.Privacy != nil {
-			params.Set("source[privacy]", *profile.Source.Privacy)
+	if profile.Avatar != nil {
+		f, err := profile.Avatar.Open()
+		if err != nil {
+			return nil, err
 		}
-		if profile.Source.Sensitive != nil {
-			params.Set("source[sensitive]", strconv.FormatBool(*profile.Source.Sensitive))
+		fname := filepath.Base(profile.Avatar.Filename)
+		part, err := mw.CreateFormFile("avatar", fname)
+		if err != nil {
+			return nil, err
 		}
-		if profile.Source.Language != nil {
-			params.Set("source[language]", *profile.Source.Language)
+		_, err = io.Copy(part, f)
+		if err != nil {
+			return nil, err
 		}
 	}
-	if profile.Avatar != "" {
-		params.Set("avatar", profile.Avatar)
+	if profile.Header != nil {
+		f, err := profile.Header.Open()
+		if err != nil {
+			return nil, err
+		}
+		fname := filepath.Base(profile.Header.Filename)
+		part, err := mw.CreateFormFile("header", fname)
+		if err != nil {
+			return nil, err
+		}
+		_, err = io.Copy(part, f)
+		if err != nil {
+			return nil, err
+		}
 	}
-	if profile.Header != "" {
-		params.Set("header", profile.Header)
+	err := mw.Close()
+	if err != nil {
+		return nil, err
 	}
-
+	params := &multipartRequest{Data: &buf, ContentType: mw.FormDataContentType()}
 	var account Account
-	err := c.doAPI(ctx, http.MethodPatch, "/api/v1/accounts/update_credentials", params, &account, nil)
+	err = c.doAPI(ctx, http.MethodPatch, "/api/v1/accounts/update_credentials", params, &account, nil)
 	if err != nil {
 		return nil, err
 	}
 	return &account, nil
+}
+
+func (c *Client) accountDeleteField(ctx context.Context, field string) (*Account, error) {
+	var buf bytes.Buffer
+	mw := multipart.NewWriter(&buf)
+	_, err := mw.CreateFormField(field)
+	if err != nil {
+		return nil, err
+	}
+	err = mw.Close()
+	if err != nil {
+		return nil, err
+	}
+	params := &multipartRequest{Data: &buf, ContentType: mw.FormDataContentType()}
+	var account Account
+	err = c.doAPI(ctx, http.MethodPatch, "/api/v1/accounts/update_credentials", params, &account, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &account, nil
+}
+
+func (c *Client) AccountDeleteAvatar(ctx context.Context) (*Account, error) {
+	return c.accountDeleteField(ctx, "avatar")
+}
+
+func (c *Client) AccountDeleteHeader(ctx context.Context) (*Account, error) {
+	return c.accountDeleteField(ctx, "header")
 }
 
 // GetAccountStatuses return statuses by specified accuont.

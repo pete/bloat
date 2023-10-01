@@ -163,15 +163,14 @@ textarea {
 	padding: 4px;
 	font-size: 11pt;
 	font-family: initial;
+	box-sizing: border-box;
 }
 
 .post-content {
-	box-sizing: border-box;
 	width: 100%;
 }
 
-#css {
-	box-sizing: border-box;
+#css, #bio {
 	max-width: 100%;
 }
 
@@ -434,6 +433,10 @@ img.emoji {
 	margin-right: 2px;
 }
 
+.profile-edit-link {
+	font-size: 8pt;
+}
+
 .user-list-item {
 	overflow: auto;
 	margin: 0 0 4px 0;
@@ -589,6 +592,41 @@ kbd {
 	color: #789922;
 }
 
+.profile-form {
+	margin: 0 4px;
+}
+
+.profile-form-field {
+	margin: 8px 0;
+}
+
+.profile-avatar {
+	height: 96px;
+	width: 96px;
+	object-fit: contain;
+}
+
+.profile-banner {
+	height: 120px;
+}
+
+.block-label,
+.profile-delete,
+.profile-field,
+.profile-field input {
+	margin: 0 0 4px 0;
+}
+
+.profile-form input[type=text] {
+	width: 320px;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+#bio {
+	width: 644px;
+}
+
 .dark {
 	background-color: #222222;
 	background-image: none;
@@ -599,7 +637,7 @@ kbd {
 	color: #81a2be;
 }
 
-.dark textarea {
+.dark .post-content {
 	background-color: #333333;
 	border: 1px solid #444444;
 	color: #eaeaea;
