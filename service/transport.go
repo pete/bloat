@@ -676,6 +676,10 @@ func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 	}, CSRF, HTML)
 
 	signout := handle(func(c *client) error {
+		err := s.Signout(c)
+		if err != nil {
+			return err
+		}
 		c.unsetSession()
 		c.redirect("/")
 		return nil

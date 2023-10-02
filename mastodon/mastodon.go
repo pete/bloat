@@ -138,6 +138,16 @@ func (c *Client) AuthenticateToken(ctx context.Context, authCode, redirectURI st
 	return c.authenticate(ctx, params)
 }
 
+func (c *Client) RevokeToken(ctx context.Context) error {
+	params := url.Values{
+		"client_id":     {c.config.ClientID},
+		"client_secret": {c.config.ClientSecret},
+		"token":         {c.GetAccessToken(ctx)},
+	}
+
+	return c.doAPI(ctx, http.MethodPost, "/oauth/revoke", params, nil, nil)
+}
+
 func (c *Client) authenticate(ctx context.Context, params url.Values) error {
 	u, err := url.Parse(c.config.Server)
 	if err != nil {

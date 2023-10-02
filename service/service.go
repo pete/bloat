@@ -902,6 +902,10 @@ func (s *service) Signin(c *client, code string) (err error) {
 	return c.setSession(c.s)
 }
 
+func (s *service) Signout(c *client) (err error) {
+	return c.RevokeToken(c.ctx)
+}
+
 func (s *service) Post(c *client, content string, replyToID string,
 	format string, visibility string, isNSFW bool,
 	files []*multipart.FileHeader) (id string, err error) {
