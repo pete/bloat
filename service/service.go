@@ -840,10 +840,6 @@ func (s *service) NewSession(c *client, instance string) (rurl string, sess *mod
 		instanceURL = "https://" + instance
 	}
 
-	sid, err := util.NewSessionID()
-	if err != nil {
-		return
-	}
 	csrf, err := util.NewCSRFToken()
 	if err != nil {
 		return
@@ -861,7 +857,6 @@ func (s *service) NewSession(c *client, instance string) (rurl string, sess *mod
 	}
 	rurl = app.AuthURI
 	sess = &model.Session{
-		ID:           sid,
 		Instance:     instance,
 		ClientID:     app.ClientID,
 		ClientSecret: app.ClientSecret,

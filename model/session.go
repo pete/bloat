@@ -1,7 +1,6 @@
 package model
 
 type Session struct {
-	ID           string   `json:"id,omitempty"`
 	UserID       string   `json:"uid,omitempty"`
 	Instance     string   `json:"ins,omitempty"`
 	ClientID     string   `json:"cid,omitempty"`
