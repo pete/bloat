@@ -33,9 +33,11 @@ func (c *client) setSession(sess *model.Session) error {
 		return err
 	}
 	http.SetCookie(c.w, &http.Cookie{
-		Name:    "session",
-		Value:   sb.String(),
-		Expires: time.Now().Add(365 * 24 * time.Hour),
+		Name:     "session",
+		Path:     "/",
+		HttpOnly: true,
+		Value:    sb.String(),
+		Expires:  time.Now().Add(365 * 24 * time.Hour),
 	})
 	return nil
 }
@@ -53,6 +55,7 @@ func (c *client) getSession() (sess *model.Session, err error) {
 func (c *client) unsetSession() {
 	http.SetCookie(c.w, &http.Cookie{
 		Name:    "session",
+		Path:    "/",
 		Value:   "",
 		Expires: time.Now(),
 	})
