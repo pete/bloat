@@ -859,6 +859,7 @@ func (s *service) NewSession(c *client, instance string) (rurl string, sess *mod
 	if err != nil {
 		return
 	}
+	rurl = app.AuthURI
 	sess = &model.Session{
 		ID:           sid,
 		Instance:     instance,
@@ -867,20 +868,6 @@ func (s *service) NewSession(c *client, instance string) (rurl string, sess *mod
 		CSRFToken:    csrf,
 		Settings:     *model.NewSettings(),
 	}
-
-	u, err := url.Parse("/oauth/authorize")
-	if err != nil {
-		return
-	}
-
-	q := make(url.Values)
-	q.Set("scope", "read write follow")
-	q.Set("client_id", app.ClientID)
-	q.Set("response_type", "code")
-	q.Set("redirect_uri", s.cwebsite+"/oauth_callback")
-	u.RawQuery = q.Encode()
-
-	rurl = instanceURL + u.String()
 	return
 }
 
