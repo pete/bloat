@@ -20,7 +20,7 @@
 	<title> {{if gt .Count 0}}({{.Count}}){{end}} {{.Title}} </title>
 	<link rel="stylesheet" href="/static/style.css">
 	{{if .CustomCSS}}
-	<link rel="stylesheet" href="{{.CustomCSS}}">
+	<link rel="stylesheet" href="/static/{{.CustomCSS}}">
 	{{end}}
 	{{if $.Ctx.FluorideMode}}
 	<script src="/static/fluoride.js"></script>

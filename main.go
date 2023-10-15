@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"bloat/config"
 	"bloat/renderer"
@@ -47,14 +46,8 @@ func main() {
 		errExit(err)
 	}
 
-	customCSS := config.CustomCSS
-	if len(customCSS) > 0 && !strings.HasPrefix(customCSS, "http://") &&
-		!strings.HasPrefix(customCSS, "https://") {
-		customCSS = "/static/" + customCSS
-	}
-
 	s := service.NewService(config.ClientName, config.ClientScope,
-		config.ClientWebsite, customCSS, config.SingleInstance,
+		config.ClientWebsite, config.CustomCSS, config.SingleInstance,
 		config.PostFormats, renderer)
 	handler := service.NewHandler(s, *verbose, config.StaticDirectory)
 
