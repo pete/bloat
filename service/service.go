@@ -1,6 +1,8 @@
 package service
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"mime/multipart"
@@ -1014,8 +1016,18 @@ func (s *service) SaveSettings(c *client, settings *model.Settings) (err error) 
 	default:
 		return errInvalidArgument
 	}
-	if len(settings.CSS) > 1<<20 {
-		return errInvalidArgument
+	if len(settings.CSS) > 0 {
+		if len(settings.CSS) > 1<<20 {
+			return errInvalidArgument
+		}
+		// For some reason, browsers convert CRLF to LF before calculating
+		// the hash of the inline resources.
+		settings.CSS = strings.ReplaceAll(settings.CSS, "\x0d\x0a", "\x0a")
+
+		h := sha256.Sum256([]byte(settings.CSS))
+		settings.CSSHash = base64.StdEncoding.EncodeToString(h[:])
+	} else {
+		settings.CSSHash = ""
 	}
 	c.s.Settings = *settings
 	return c.setSession(c.s)

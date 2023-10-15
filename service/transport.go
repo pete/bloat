@@ -26,6 +26,16 @@ const (
 	CSRF
 )
 
+const csp = "default-src 'none';" +
+	" img-src *;" +
+	" media-src *;" +
+	" font-src *;" +
+	" child-src *;" +
+	" connect-src 'self';" +
+	" form-action 'self';" +
+	" script-src 'self';" +
+	" style-src 'self'"
+
 func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 	r := mux.NewRouter()
 
@@ -58,19 +68,26 @@ func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 				}(time.Now())
 			}
 
-			var ct string
+			h := c.w.Header()
 			switch rt {
 			case HTML:
-				ct = "text/html; charset=utf-8"
+				h.Set("Content-Type", "text/html; charset=utf-8")
+				h.Set("Content-Security-Policy", csp)
 			case JSON:
-				ct = "application/json"
+				h.Set("Content-Type", "application/json")
 			}
-			c.w.Header().Add("Content-Type", ct)
 
 			err = c.authenticate(at, s.instance)
 			if err != nil {
 				writeError(c, err, rt, req.Method == http.MethodGet)
 				return
+			}
+
+			// Override the CSP header to allow custom CSS
+			if rt == HTML && len(c.s.Settings.CSS) > 0 &&
+				len(c.s.Settings.CSSHash) > 0 {
+				v := fmt.Sprintf("%s 'sha256-%s'", csp, c.s.Settings.CSSHash)
+				h.Set("Content-Security-Policy", v)
 			}
 
 			err = f(c)

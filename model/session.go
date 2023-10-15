@@ -27,6 +27,7 @@ type Settings struct {
 	AntiDopamineMode      bool   `json:"adm,omitempty"`
 	HideUnsupportedNotifs bool   `json:"hun,omitempty"`
 	CSS                   string `json:"css,omitempty"`
+	CSSHash               string `json:"cssh,omitempty"`
 }
 
 func NewSettings() *Settings {
@@ -43,5 +44,6 @@ func NewSettings() *Settings {
 		AntiDopamineMode:      false,
 		HideUnsupportedNotifs: false,
 		CSS:                   "",
+		CSSHash:               "",
 	}
 }
