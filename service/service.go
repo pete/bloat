@@ -8,6 +8,8 @@ import (
 	"mime/multipart"
 	"net/url"
 	"strings"
+	"crypto/rand"
+	"encoding/hex"
 
 	"bloat/mastodon"
 	"bloat/model"
@@ -75,11 +77,21 @@ func getRendererContext(c *client) *renderer.Context {
 		FluorideMode:     settings.FluorideMode,
 		DarkMode:         settings.DarkMode,
 		CSRFToken:        session.CSRFToken,
+		CSPNonce:         c.CSPNonce,
 		UserID:           session.UserID,
 		AntiDopamineMode: settings.AntiDopamineMode,
 		CustomCSS:        settings.CustomCSS,
 		Referrer:         referrer,
 	}
+}
+
+func getCSPNonce() string {
+	bf := make([]byte, 8, 8) // 64 bits seems sufficient
+	_, err := rand.Read(bf)
+	if err != nil {
+		panic(err)
+	}
+	return hex.EncodeToString(bf)
 }
 
 func addToReplyMap(m map[string][]mastodon.ReplyInfo, key interface{},

@@ -12,6 +12,7 @@ type Context struct {
 	ThreadInNewTab   bool
 	DarkMode         bool
 	CSRFToken        string
+	CSPNonce         string
 	UserID           string
 	AntiDopamineMode bool
 	CustomCSS        string

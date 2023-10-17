@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"fmt"
 
 	"bloat/mastodon"
 	"bloat/model"
@@ -43,6 +44,7 @@ type client struct {
 	http.ResponseWriter
 	Req       *http.Request
 	CSRFToken string
+	CSPNonce  string
 	Session   model.Session
 }
 
@@ -129,10 +131,26 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 			switch rt {
 			case HTML:
 				ct = "text/html; charset=utf-8"
+				c.CSPNonce = getCSPNonce()
 			case JSON:
 				ct = "application/json"
 			}
 			c.Header().Add("Content-Type", ct)
+
+			cspf := `default-src 'none';` +
+				`font-src 'none'; `+
+				`img-src *; `+
+				`media-src *; `+
+				`child-src *; `+
+				`connect-src 'self'; `+
+				`frame-src 'self';`+
+				`form-action 'self'; `+
+				`script-src 'self' 'unsafe-inline' 'nonce-%s'; `+
+				`style-src 'nonce-%s'; `+
+				``
+
+			c.Header().Add("Content-Security-Policy",
+				fmt.Sprintf(cspf, c.CSPNonce, c.CSPNonce))
 
 			err = authenticate(c, at)
 			if err != nil {

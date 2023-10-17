@@ -18,16 +18,16 @@
 	<meta http-equiv="refresh" content="{{.RefreshInterval}}">
 	{{end}}
 	<title> {{if gt .Count 0}}({{.Count}}){{end}} {{.Title}} </title>
-	<link rel="stylesheet" href="/static/style.css">
+	<link rel="stylesheet" href="/static/style.css" nonce="{{$.Ctx.CSPNonce}}">
 	{{if .CustomCSS}}
-	<link rel="stylesheet" href="{{.CustomCSS}}">
+	<link rel="stylesheet" href="{{.CustomCSS}}" nonce="{{$.Ctx.CSPNonce}}">
 	{{end}}
 	{{if $.Ctx.FluorideMode}}
-	<script src="/static/fluoride.js"></script>
+	<script src="/static/fluoride.js" nonce="{{$.Ctx.CSPNonce}}"></script>
 	{{end}}
 	{{if $.Ctx.CustomCSS}}
-	<style>{{$.Ctx.CustomCSS}}</style>
+	<style nonce="{{$.Ctx.CSPNonce}}">{{$.Ctx.CustomCSS}}</style>
 	{{end}}
 </head>
-<body {{if $.Ctx.DarkMode}}class="dark"{{end}}>
+<body style="color: green !important; background-color: red !important;" {{if $.Ctx.DarkMode}}class="dark"{{end}}>
 {{end}}
