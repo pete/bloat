@@ -145,7 +145,7 @@ func NewHandler(s *service, logger *log.Logger, staticDir string) http.Handler {
 				`connect-src 'self'; `+
 				`frame-src 'self';`+
 				`form-action 'self'; `+
-				`script-src 'self' 'unsafe-inline' 'nonce-%s'; `+
+				`script-src 'self' 'nonce-%s'; `+
 				`style-src 'nonce-%s'; `+
 				``
 
