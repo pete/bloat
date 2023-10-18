@@ -63,10 +63,12 @@ func getRendererContext(c *client) *renderer.Context {
 	var settings model.Settings
 	var session model.Session
 	var referrer string
+	var nonce string
 	if c != nil {
 		settings = c.Session.Settings
 		session = c.Session
 		referrer = c.url()
+		nonce = c.CSPNonce
 	} else {
 		settings = *model.NewSettings()
 	}
@@ -77,7 +79,7 @@ func getRendererContext(c *client) *renderer.Context {
 		FluorideMode:     settings.FluorideMode,
 		DarkMode:         settings.DarkMode,
 		CSRFToken:        session.CSRFToken,
-		CSPNonce:         c.CSPNonce,
+		CSPNonce:         nonce,
 		UserID:           session.UserID,
 		AntiDopamineMode: settings.AntiDopamineMode,
 		CustomCSS:        settings.CustomCSS,
