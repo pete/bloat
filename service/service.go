@@ -1022,7 +1022,7 @@ func (s *service) SaveSettings(c *client, settings *model.Settings) (err error) 
 		}
 		// For some reason, browsers convert CRLF to LF before calculating
 		// the hash of the inline resources.
-		settings.CSS = strings.ReplaceAll(settings.CSS, "\x0d\x0a", "\x0a")
+		settings.CSS = strings.Replace(settings.CSS, "\x0d\x0a", "\x0a", -1)
 
 		h := sha256.Sum256([]byte(settings.CSS))
 		settings.CSSHash = base64.StdEncoding.EncodeToString(h[:])
