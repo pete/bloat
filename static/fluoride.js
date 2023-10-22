@@ -325,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		links[j].target = "_blank";
 	}
 
-	var links = document.querySelectorAll(".status-media-container .img-link");
+	var links = document.querySelectorAll(".status-media-container .img-link, .user-profile-img-container .img-link");
 	for (var j = 0; j < links.length; j++) {
 		handleImgPreview(links[j]);
 	}
