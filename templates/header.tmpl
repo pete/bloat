@@ -29,5 +29,5 @@
 	<style nonce="{{$.Ctx.CSPNonce}}">{{$.Ctx.CustomCSS}}</style>
 	{{end}}
 </head>
-<body style="color: green !important; background-color: red !important;" {{if $.Ctx.DarkMode}}class="dark"{{end}}>
+<body {{if $.Ctx.DarkMode}}class="dark"{{end}}>
 {{end}}
