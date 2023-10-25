@@ -32,7 +32,6 @@ const csp = "default-src 'none';" +
 	" font-src *;" +
 	" child-src *;" +
 	" connect-src 'self';" +
-	" form-action 'self';" +
 	" script-src 'self';" +
 	" style-src 'self'"
 
