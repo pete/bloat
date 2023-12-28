@@ -3,49 +3,41 @@
 	<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 	<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 	{{if .ReplyContext}}
-	<input type="hidden" name="reply_to_id" value="{{.ReplyContext.InReplyToID}}" />
-	<input type="hidden" name="quickreply" value="{{.ReplyContext.QuickReply}}" />
-	<label for="post-content" class="post-form-title"> Reply to @{{.ReplyContext.InReplyToName}} </label>
+	<input type="hidden" name="reply_to_id" value="{{.ReplyContext.InReplyToID}}">
+	<input type="hidden" name="quickreply" value="{{.ReplyContext.QuickReply}}">
+	<label for="post-content">Reply to @{{.ReplyContext.InReplyToName}}</label>
 	{{else}}
-	<label for="post-content" class="post-form-title"> New post </label>
+	<label for="post-content">New post</label>
 	{{end}}
-	<a class="post-form-emoji-link" href="/emojis" target="_blank" title="Emoji list (L)" accesskey="L">
-		emoji list
-	</a>
-	<div class="post-form-content-container">
+	<a class="emoji-link" href="/emojis" target="_blank" title="Emoji list (L)" accesskey="L">emoji list</a>
+	<div class="form-field-s">
 		<textarea id="post-content" name="content" class="post-content" cols="34" rows="5" accesskey="E" title="Edit post (E)">{{if .ReplyContext}}{{.ReplyContext.ReplyContent}}{{end}}</textarea>
 	</div>
-	<div>
+	<div class="form-field-s">
 		{{if .Formats}}
-		<span class="post-form-field">
 			{{$defFormat := .DefaultFormat}}
 			<select id="post-format" name="format" accesskey="F" title="Format (F)">
 				{{range .Formats}} 
 					<option value="{{.Type}}" {{if eq $defFormat .Type}}selected{{end}}>{{.Name}}</option> 
 				{{end}}
 			</select>
-		</span>
 		{{end}}
-		<span class="post-form-field">
-			<select id="post-visilibity" name="visibility" {{if .ReplyContext}}{{if .ReplyContext.ForceVisibility}}disabled{{end}}{{end}} accesskey="S" title="Scope (S)">
-				<option value="public" {{if eq .DefaultVisibility "public"}}selected{{end}}>Public</option>
-				<option value="unlisted" {{if eq .DefaultVisibility "unlisted"}}selected{{end}}>Unlisted</option>
-				<option value="private" {{if eq .DefaultVisibility "private"}}selected{{end}}>Private</option>
-				<option value="direct" {{if eq .DefaultVisibility "direct"}}selected{{end}}>Direct</option>
-			</select>
-		</span>
-		<span class="post-form-field">
-			<input type="checkbox" id="nsfw-checkbox" name="is_nsfw" value="true" accesskey="N" title="NSFW (N)">
-			<label for="nsfw-checkbox"> NSFW </label>
-		</span>
+		<select id="post-visilibity" name="visibility" {{if .ReplyContext}}{{if .ReplyContext.ForceVisibility}}disabled{{end}}{{end}} accesskey="S" title="Scope (S)">
+			<option value="public" {{if eq .DefaultVisibility "public"}}selected{{end}}>Public</option>
+			<option value="unlisted" {{if eq .DefaultVisibility "unlisted"}}selected{{end}}>Unlisted</option>
+			<option value="private" {{if eq .DefaultVisibility "private"}}selected{{end}}>Private</option>
+			<option value="direct" {{if eq .DefaultVisibility "direct"}}selected{{end}}>Direct</option>
+		</select>
+		<input type="checkbox" id="nsfw-checkbox" name="is_nsfw" value="true" accesskey="N" title="NSFW (N)">
+		<label for="nsfw-checkbox"> NSFW </label>
 	</div>
-	<div>
-		<span class="post-form-field">
-			<input id="post-file-picker" type="file" name="attachments" multiple accesskey="A" title="Attachments (A)">
-		</span>
+	<div class="form-field-s">
+		<input id="post-file-picker" type="file" name="attachments" multiple accesskey="A" title="Attachments (A)">
 	</div>
-	<button type="submit" accesskey="P" title="Post (P)"> Post </button>
-	<button type="reset" title="Reset"> Reset </button>
+	<div class="form-field-s">
+		<button type="submit" accesskey="P" title="Post (P)"> Post </button>
+		<button type="reset" title="Reset"> Reset </button>
+	</div>
 </form>
 {{end}}
 

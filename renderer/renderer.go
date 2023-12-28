@@ -43,7 +43,7 @@ type TemplateData struct {
 }
 
 func emojiHTML(e mastodon.Emoji, height string) string {
-	return `<img class="emoji" src="` + e.URL + `" alt=":` + e.ShortCode + `:" title=":` + e.ShortCode + `:" height="` + height + `"/>`
+	return `<img class="emoji" src="` + e.URL + `" alt=":` + e.ShortCode + `:" title=":` + e.ShortCode + `:" height="` + height + `">`
 }
 
 func emojiFilter(content string, emojis []mastodon.Emoji) string {

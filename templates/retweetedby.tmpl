@@ -1,6 +1,6 @@
 {{with .Data}}
 {{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
-<div class="page-title"> Retweeted By </div>
+<h1>Retweeted By</h1>
 
 {{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
 

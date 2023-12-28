@@ -74,8 +74,10 @@ function handleLikeForm(id, f) {
 			for (var i = 0; i < counts.length; i++) {
 				if (count > 0) {
 					counts[i].innerHTML = "(" + count + ")";
+					counts[i].classList.remove("hidden");
 				} else {
 					counts[i].innerHTML = "";
+					counts[i].classList.add("hidden");
 				}
 			}
 		}, function(err) {
@@ -113,8 +115,10 @@ function handleRetweetForm(id, f) {
 			for (var i = 0; i < counts.length; i++) {
 				if (count > 0) {
 					counts[i].innerHTML = "(" + count + ")";
+					counts[i].classList.remove("hidden");
 				} else {
 					counts[i].innerHTML = "";
+					counts[i].classList.add("hidden");
 				}
 			}
 		}, function(err) {
@@ -151,8 +155,7 @@ function handleReplyToLink(a) {
 			var ract = event.target.getBoundingClientRect();
 			copy.style["max-width"] = (window.innerWidth - ract.left - 32) + "px";
 			if (ract.top > window.innerHeight / 2) {
-				copy.style.bottom = (window.innerHeight - 
-					window.scrollY - ract.top) + "px";
+				copy.style.bottom = ract.height + 'px';
 			}
 			event.target.parentElement.appendChild(copy);
 		}
@@ -320,7 +323,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
-	var links = document.querySelectorAll(".user-profile-decription a, .user-fields a");
+	var links = document.querySelectorAll(".user-profile-description a, .user-fields a");
 	for (var j = 0; j < links.length; j++) {
 		links[j].target = "_blank";
 	}

@@ -1,15 +1,15 @@
 {{with .Data}}
 {{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
-<div class="page-title"> Mute {{EmojiFilter (HTML .User.DisplayName) .User.Emojis | Raw}} @{{.User.Acct}} </div>
+<h1>Mute {{EmojiFilter (HTML .User.DisplayName) .User.Emojis | Raw}} @{{.User.Acct}}</h1>
 
 <form action="/mute/{{.User.ID}}" method="POST">
 	<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 	<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
-	<div class="settings-form-field">
+	<div class="form-field-s">
 		<input id="notifications" name="notifications" type="checkbox" value="true" checked>
 		<label for="notifications"> Mute notifications </label>
 	</div>
-	<div class="settings-form-field">
+	<div class="form-field-s">
 		<label for="duration"> Auto unmute </label>
 		<select id="duration" name="duration">
 			<option value="0" selected>Disabled</option>

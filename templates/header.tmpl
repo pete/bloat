@@ -17,6 +17,9 @@
 	{{if .RefreshInterval}}
 	<meta http-equiv="refresh" content="{{.RefreshInterval}}">
 	{{end}}
+	{{if $.Ctx.DarkMode}}
+	<meta name="color-scheme" content="dark">
+	{{end}}
 	<title> {{if gt .Count 0}}({{.Count}}){{end}} {{.Title}} </title>
 	<link rel="stylesheet" href="/static/style.css">
 	{{if .CustomCSS}}

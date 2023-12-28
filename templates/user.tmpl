@@ -1,11 +1,11 @@
 {{with .Data}}
 {{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
-<div class="page-title"> User </div>
+<h1>User</h1>
 
 <div class="user-info-container">
 	<div class="user-profile-img-container">
 		<a class="img-link" href="{{.User.Avatar}}" target="_blank">
-			<img class="user-profile-img" src="{{.User.Avatar}}" alt="profile-avatar" height="96" />
+			<img class="user-profile-img" src="{{.User.Avatar}}" alt="@{{.User.Acct}}" height="96">
 		</a>
 	</div>
 	<div class="user-profile-details-container">
@@ -78,7 +78,7 @@
 				<input type="submit" value="unmute" class="btn-link">
 			</form>
 			{{else}}
-			<a href="/mute/{{.User.ID}}"> mute </a>
+			<a href="/mute/{{.User.ID}}">mute</a>
 			{{end}}
 			{{if .User.Pleroma.Relationship.Following}} 
 			-
@@ -99,26 +99,26 @@
 		</div>
 		{{end}}
 		<div>
-			<a href="/user/{{.User.ID}}"> statuses ({{.User.StatusesCount}}) </a> - 
-			<a href="/user/{{.User.ID}}/following"> following ({{.User.FollowingCount}}) </a> - 
-			<a href="/user/{{.User.ID}}/followers"> followers ({{.User.FollowersCount}}) </a> - 
-			<a href="/user/{{.User.ID}}/media"> media </a>
+			<a href="/user/{{.User.ID}}">statuses ({{.User.StatusesCount}})</a> -
+			<a href="/user/{{.User.ID}}/following">following ({{.User.FollowingCount}})</a> -
+			<a href="/user/{{.User.ID}}/followers">followers ({{.User.FollowersCount}})</a> -
+			<a href="/user/{{.User.ID}}/media">media</a>
 		</div>
 		{{if .IsCurrent}}
 		<div>
-			<a href="/user/{{.User.ID}}/bookmarks"> bookmarks </a>
-			- <a href="/user/{{.User.ID}}/likes"> likes </a>
-			- <a href="/user/{{.User.ID}}/mutes"> mutes </a>
-			- <a href="/user/{{.User.ID}}/blocks"> blocks </a>
-			{{if .User.Locked}}- <a href="/user/{{.User.ID}}/requests"> requests </a>{{end}}
+			<a href="/user/{{.User.ID}}/bookmarks">bookmarks</a>
+			- <a href="/user/{{.User.ID}}/likes">likes</a>
+			- <a href="/user/{{.User.ID}}/mutes">mutes</a>
+			- <a href="/user/{{.User.ID}}/blocks">blocks</a>
+			{{if .User.Locked}}- <a href="/user/{{.User.ID}}/requests">requests</a>{{end}}
 		</div>
 		{{end}}
 		<div>
-			<a href="/usersearch/{{.User.ID}}"> search statuses </a>
-			{{if .IsCurrent}} - <a href="/filters"> filters </a> {{end}}
+			<a href="/usersearch/{{.User.ID}}">search statuses</a>
+			{{if .IsCurrent}} - <a href="/filters">filters</a> {{end}}
 		</div>
 	</div>
-	<div class="user-profile-decription">
+	<div class="user-profile-description">
 	{{- EmojiFilter .User.Note .User.Emojis | Raw -}}
 	</div>
 	{{if .User.Fields}}
@@ -131,63 +131,63 @@
 </div>
 
 {{if eq .Type ""}}
-<div class="page-title"> Statuses </div>
+<h1>Statuses</h1>
 {{range .Statuses}}
 {{template "status.tmpl" (WithContext . $.Ctx)}}
 {{else}}
-<div class="no-data-found">No data found</div>
+<p>No data found</p>
 {{end}}
 
 {{else if eq .Type "following"}}
-<div class="page-title"> Following </div>
+<h1>Following</h1>
 {{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
 
 {{else if eq .Type "followers"}}
-<div class="page-title"> Followers </div>
+<h1>Followers</h1>
 {{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
 
 {{else if eq .Type "media"}}
-<div class="page-title"> Statuses with media </div>
+<h1>Statuses with media</h1>
 {{range .Statuses}}
 {{template "status.tmpl" (WithContext . $.Ctx)}}
 {{else}}
-<div class="no-data-found">No data found</div>
+<p>No data found</p>
 {{end}}
 
 {{else if eq .Type "bookmarks"}}
-<div class="page-title"> Bookmarks </div>
+<h1>Bookmarks</h1>
 {{range .Statuses}}
 {{template "status.tmpl" (WithContext . $.Ctx)}}
 {{else}}
-<div class="no-data-found">No data found</div>
+<p>No data found</p>
 {{end}}
 
 {{else if eq .Type "likes"}}
-<div class="page-title"> Likes </div>
+<h1>Likes</h1>
 {{range .Statuses}}
 {{template "status.tmpl" (WithContext . $.Ctx)}}
 {{else}}
-<div class="no-data-found">No data found</div>
+<p>No data found</p>
 {{end}}
 
 {{else if eq .Type "mutes"}}
-<div class="page-title"> Mutes </div>
+<h1>Mutes</h1>
 {{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
 
 {{else if eq .Type "blocks"}}
-<div class="page-title"> Blocks </div>
+<h1>Blocks</h1>
 {{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
 
 {{else if eq .Type "requests"}}
-<div class="page-title"> Follow requests </div>
+<h1>Follow requests</h1>
 {{template "requestlist.tmpl" (WithContext .Users $.Ctx)}}
 {{end}}
 
-<div class="pagination">
+<nav class="pagination">
 	{{if .NextLink}}
 		<a href="{{.NextLink}}">[next]</a>
 	{{end}}
-</div>
+</nav>
 
 {{template "footer.tmpl"}}
 {{end}}

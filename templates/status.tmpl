@@ -1,15 +1,15 @@
 {{with .Data}}
-<div id="status-{{.ID}}" class="status-container-container">
+<article id="status-{{.ID}}" class="status-container-container">
 	{{if .Reblog}}
 	<div class="retweet-info">
 		<a class="img-link" href="/user/{{.Account.ID}}">
-			<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="avatar" height="24" />
+			<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="@{{.Account.Acct}}" height="24">
 		</a>
 		<bdi class="status-dname">{{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}}</bdi>
 		<a href="/user/{{.Account.ID}}"> 
 			<span class="status-uname">@{{.Account.Acct}}</span> 
 		</a>
-		retweeted
+		<span>retweeted</span>
 	</div>
 	{{template "status" (WithContext .Reblog $.Ctx)}}
 	{{else}}
@@ -18,26 +18,20 @@
 	<div class="status-container status-{{.ID}}" data-id="{{.ID}}">
 		<div class="status-profile-img-container">
 			<a class="img-link" href="/user/{{.Account.ID}}">
-				<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="avatar" height="48" />
+				<img class="status-profile-img" src="{{.Account.Avatar}}" title="@{{.Account.Acct}}" alt="@{{.Account.Acct}}" height="48">
 			</a>
 		</div>
 		<div class="status"> 
 			<div class="status-name">
 				<bdi class="status-dname">{{EmojiFilter (HTML .Account.DisplayName) .Account.Emojis | Raw}}</bdi>
-				<a href="/user/{{.Account.ID}}">
-					<span class="status-uname">@{{.Account.Acct}}</span>
-				</a>
+				<a href="/user/{{.Account.ID}}"><span class="status-uname">@{{.Account.Acct}}</span></a>
 				<div class="more-container">
 					<div class="remote-link">
 						{{if .IDNumbers}}#{{index .IDNumbers .ID}}{{end}} {{.Visibility}}
 					</div>
 					<div class="more-content">
-						<a class="more-link" href="{{.URL}}" target="_blank">
-							source
-						</a>
-						<a class="more-link" href="/quickreply/{{.ID}}#status-{{.ID}}">
-							quickreply
-						</a>
+						<a class="more-link" href="{{.URL}}" target="_blank">source</a>
+						<a class="more-link" href="/quickreply/{{.ID}}#status-{{.ID}}">quickreply</a>
 						{{if .Muted}}
 						<form action="/unmuteconv/{{.ID}}" method="post" target="_self">
 							<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
@@ -76,6 +70,7 @@
 					</div>
 				</div>
 			</div>
+			{{if (or .InReplyToID .ShowReplies)}}
 			<div class="status-reply-container">
 				{{if .InReplyToID}}
 				<a class="status-reply-to-link" href="{{if not .ShowReplies}}/thread/{{.InReplyToID}}{{end}}#status-{{.InReplyToID}}"> 
@@ -90,9 +85,10 @@
 				{{end}}
 				{{end}}
 			</div>
+			{{end}}
 			{{if (or .Content .SpoilerText)}}
 			<div class="status-content">
-				{{- if .SpoilerText}}{{EmojiFilter (HTML .SpoilerText) .Emojis | Raw}}<br/>{{end -}}
+				{{- if .SpoilerText}}{{EmojiFilter (HTML .SpoilerText) .Emojis | Raw}}<br>{{end -}}
 				{{- StatusContentFilter .Content .Emojis .Mentions | Raw -}}
 			</div>
 			{{end}}
@@ -100,42 +96,36 @@
 			<div class="status-media-container">
 				{{range .MediaAttachments}}
 
-				{{if eq .Type "image"}}
+				{{- if eq .Type "image" -}}
 				{{if $.Ctx.HideAttachments}}
-				<a href="{{.URL}}" target="_blank">
-					[image{{if $s.Sensitive}}/nsfw{{end}}{{if .Description}}: {{.Description}}{{end}}]
-				</a>
-				{{else}}
-				<a class="img-link" href="{{.URL}}" target="_blank" title="{{.Description}}">
-					<img class="status-image" src="{{.PreviewURL}}" alt="status-image" height="240" />
+				<a href="{{.URL}}" target="_blank">[image{{if $s.Sensitive}}/nsfw{{end}}{{if .Description}}: {{.Description}}{{end}}]</a>
+				{{- else -}}
+				<a class="img-link status-image-container" href="{{.URL}}" target="_blank" title="{{.Description}}">
+					<img class="status-image" src="{{.PreviewURL}}" alt="{{.Description}}" height="240">
 					{{if (and $.Ctx.MaskNSFW $s.Sensitive)}}
 					<div class="status-nsfw-overlay"></div>
 					{{end}}
 				</a>
-				{{end}}
+				{{- end -}}
 
 				{{else if eq .Type "audio"}}
 				{{if $.Ctx.HideAttachments}}
-				<a href="{{.URL}}" target="_blank">
-					[audio{{if $s.Sensitive}}/nsfw{{end}}{{if .Description}}: {{.Description}}{{end}}]
-				</a>
+				<a href="{{.URL}}" target="_blank">[audio{{if $s.Sensitive}}/nsfw{{end}}{{if .Description}}: {{.Description}}{{end}}]</a>
 				{{else}}
 				<audio class="status-audio" controls title="{{.Description}}">
 					<source src="{{.URL}}">
-					<a href="{{.URL}}" target="_blank"> [audio] </a>
+					<a href="{{.URL}}" target="_blank">[audio]</a>
 				</audio>
 				{{end}}
 
 				{{else if eq .Type "video"}}
 				{{if $.Ctx.HideAttachments}}
-				<a href="{{.URL}}" target="_blank">
-					[video{{if $s.Sensitive}}/nsfw{{end}}{{if .Description}}: {{.Description}}{{end}}]
-				</a>
+				<a href="{{.URL}}" target="_blank">[video{{if $s.Sensitive}}/nsfw{{end}}{{if .Description}}: {{.Description}}{{end}}]</a>
 				{{else}}
 				<div class="status-video-container" title="{{.Description}}">
 					<video class="status-video" controls height="240">
 						<source src="{{.URL}}">
-						<a href="{{.URL}}" target="_blank"> [video] </a>
+						<a href="{{.URL}}" target="_blank">[video]</a>
 					</video>
 					{{if (and $.Ctx.MaskNSFW $s.Sensitive)}}
 					<div class="status-nsfw-overlay"></div>
@@ -144,20 +134,18 @@
 				{{end}}
 
 				{{else}}
-				<a href="{{.URL}}" target="_blank"> 
-					[attachment{{if $s.Sensitive}}/nsfw{{end}}{{if .Description}}: {{.Description}}{{end}}]
-				</a>
+				<a href="{{.URL}}" target="_blank">[attachment{{if $s.Sensitive}}/nsfw{{end}}{{if .Description}}: {{.Description}}{{end}}]</a>
 				{{end}}
-				{{end}}
+				{{- end -}}
 			</div>
 			{{end}}
 			{{if .Poll}}
-			<form class="poll-form" action="/vote/{{.Poll.ID}}" method="POST" target="_self">
+			<form class="status-poll" action="/vote/{{.Poll.ID}}" method="POST" target="_self">
 				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 				<input type="hidden" name="status_id" value="{{$s.ID}}">
 				{{range $i, $o := .Poll.Options}}
-				<div class="poll-option">
+				<div class="form-field-s">
 					{{if (or $s.Poll.Expired $s.Poll.Voted)}}
 					<div> {{EmojiFilter (HTML $o.Title) $s.Emojis | Raw}} - {{$o.VotesCount}} votes </div>
 					{{else}}
@@ -170,9 +158,11 @@
 				</div>
 				{{end}}
 				{{if not (or .Poll.Expired .Poll.Voted)}}
+				<div class="form-field-s">
 				<button type="submit"> Vote </button>
+				</div>
 				{{end}}
-				<div class="poll-info">
+				<div>
 					<span>{{.Poll.VotesCount}} votes</span>
 					{{if .Poll.Expired}}
 					<span> - poll expired </span>
@@ -189,10 +179,9 @@
 			{{end}}
 			<div class="status-action-container"> 
 				<div class="status-action">
-					<a href="/thread/{{.ID}}?reply=true#status-{{.ID}}"> 
-						reply
-					</a>
-					<a class="status-reply-count" href="/thread/{{.ID}}#status-{{.ID}}" {{if $.Ctx.ThreadInNewTab}}target="_blank"{{end}}>
+					<a href="/thread/{{.ID}}?reply=true#status-{{.ID}}">reply</a>
+					<a class="status-reply-count {{if or $.Ctx.AntiDopamineMode (not .RepliesCount)}}hidden{{end}}" 
+						href="/thread/{{.ID}}#status-{{.ID}}" {{if $.Ctx.ThreadInNewTab}}target="_blank"{{end}} title="replies">
 						{{if and (not $.Ctx.AntiDopamineMode) .RepliesCount}}
 							({{DisplayInteractionCount .RepliesCount}})
 						{{end}}
@@ -206,7 +195,8 @@
 						<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
 						<input type="submit" value="{{$rt}}" class="btn-link" 
 							{{if or (eq .Visibility "private") (eq .Visibility "direct")}}title="this status cannot be retweeted" disabled{{end}}>
-						<a class="status-retweet-count" href="/retweetedby/{{.ID}}" title="click to see the the list"> 
+						<a class="status-retweet-count {{if or $.Ctx.AntiDopamineMode (not .ReblogsCount)}}hidden{{end}}" 
+							href="/retweetedby/{{.ID}}" title="click to see the the list"> 
 							{{if and (not $.Ctx.AntiDopamineMode) .ReblogsCount}}
 								({{DisplayInteractionCount .ReblogsCount}})
 							{{end}}
@@ -220,7 +210,8 @@
 						<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
 						<input type="hidden" name="retweeted_by_id" value="{{.RetweetedByID}}">
 						<input type="submit" value="{{$like}}" class="btn-link">
-						<a class="status-like-count" href="/likedby/{{.ID}}" title="click to see the the list"> 
+						<a class="status-like-count {{if or $.Ctx.AntiDopamineMode (not .FavouritesCount)}}hidden{{end}}" 
+							href="/likedby/{{.ID}}" title="click to see the the list"> 
 							{{if and (not $.Ctx.AntiDopamineMode) .FavouritesCount}}
 								({{DisplayInteractionCount .FavouritesCount}})
 							{{end}}
@@ -238,8 +229,9 @@
 			</div>
 		</div>
 	</div>
+	<br class="hidden">
 	{{end}}
 	{{end}}
 	{{end}}
-</div>
+</article>
 {{end}}
