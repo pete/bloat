@@ -275,7 +275,7 @@ a:hover,
 }
 
 .btn-link:disabled {
-	color: #5a5a77;
+	color: #666666;
 	cursor: unset;
 }
 
@@ -557,6 +557,15 @@ input::file-selector-button:active {
 	background-color: #cacaca;
 }
 
+input[type=submit]:disabled,
+button:disabled,
+select:disabled,
+input:disabled::file-selector-button {
+	color: #666666;
+	background-color: #eaeaea;
+	border: 2px solid #bababa;
+}
+
 .dark,
 .dark body,
 .dark .more-content {
@@ -579,16 +588,6 @@ input::file-selector-button:active {
 .dark #reply-popup,
 .dark #reply-to-popup {
 	background-color: #181818;
-}
-
-.dark a,
-.dark .btn-link {
-	color: #6090a3;
-}
-
-.dark a:hover,
-.dark .btn-link:hover {
-	color: #497091;
 }
 
 .dark *:focus-visible {
@@ -626,6 +625,7 @@ input::file-selector-button:active {
 .dark button,
 .dark select,
 .dark input::file-selector-button {
+	color: #dcdcdc;
 	background-color: #242424;
 	border: 2px solid #333333;
 }
@@ -649,4 +649,28 @@ input::file-selector-button:active {
 .dark select:active,
 .dark input::file-selector-button:active {
 	background-color: #3f3f3f;
+}
+
+.dark input[type=submit]:disabled,
+.dark button:disabled,
+.dark select:disabled,
+.dark input:disabled::file-selector-button {
+	color: #666666;
+	background-color: #242424;
+	border: 2px solid #333333;
+}
+
+.dark a,
+.dark btn-link,
+.dark input.btn-link {
+	color: #6090a3;
+}
+
+.dark a:hover,
+.dark .btn-link:hover {
+	color: #497091;
+}
+
+.dark .btn-link:disabled {
+	color: #666666;
 }
