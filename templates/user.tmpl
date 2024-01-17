@@ -172,11 +172,45 @@
 
 {{else if eq .Type "mutes"}}
 <h1>Mutes</h1>
-{{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
+{{if .Users}}
+<table>
+{{range .Users}}
+	<tr>
+		<td> {{template "userlistitem.tmpl" (WithContext . $.Ctx)}} </td>
+		<td>
+			<form class="user-list-action" action="/unmute/{{.ID}}" method="POST">
+				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
+				<button type="submit">Unmute</button>
+			</form>
+		</td>
+	</tr>
+{{end}}
+</table>
+{{else}}
+<p>No data found</p>
+{{end}}
 
 {{else if eq .Type "blocks"}}
 <h1>Blocks</h1>
-{{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
+{{if .Users}}
+<table>
+{{range .Users}}
+	<tr>
+		<td> {{template "userlistitem.tmpl" (WithContext . $.Ctx)}} </td>
+		<td>
+			<form class="user-list-action" action="/unblock/{{.ID}}" method="POST">
+				<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+				<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
+				<button type="submit">Unblock</button>
+			</form>
+		</td>
+	</tr>
+{{end}}
+</table>
+{{else}}
+<p>No data found</p>
+{{end}}
 
 {{else if eq .Type "requests"}}
 <h1>Follow requests</h1>
