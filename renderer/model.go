@@ -99,12 +99,11 @@ type NotificationData struct {
 
 type UserData struct {
 	*CommonData
-	User      *mastodon.Account
-	IsCurrent bool
-	Type      string
-	Users     []*mastodon.Account
-	Statuses  []*mastodon.Status
-	NextLink  string
+	User     *mastodon.Account
+	Type     string
+	Users    []*mastodon.Account
+	Statuses []*mastodon.Status
+	NextLink string
 }
 
 type UserSearchData struct {

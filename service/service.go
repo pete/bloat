@@ -628,7 +628,6 @@ func (s *service) UserPage(c *client, id string, pageType string,
 	cdata := s.cdata(c, user.DisplayName+" @"+user.Acct, 0, 0, "")
 	data := &renderer.UserData{
 		User:       user,
-		IsCurrent:  isCurrent,
 		Type:       pageType,
 		Users:      users,
 		Statuses:   statuses,

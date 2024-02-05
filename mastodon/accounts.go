@@ -14,7 +14,7 @@ import (
 )
 
 type AccountPleroma struct {
-	Relationship Relationship `json:"relationship"`
+	Relationship *Relationship `json:"relationship"`
 }
 
 // Account hold information for mastodon account.
@@ -73,7 +73,7 @@ func (c *Client) GetAccount(ctx context.Context, id string) (*Account, error) {
 			return nil, err
 		}
 		if len(rs) > 0 {
-			account.Pleroma = &AccountPleroma{*rs[0]}
+			account.Pleroma = &AccountPleroma{rs[0]}
 		}
 	}
 	return &account, nil
@@ -221,10 +221,40 @@ func (c *Client) GetAccountStatuses(ctx context.Context, id string, onlyMedia bo
 	return statuses, nil
 }
 
+func (c *Client) getMissingRelationships(ctx context.Context, accounts []*Account) ([]*Account, error) {
+	var ids []string
+	for _, a := range accounts {
+		if a.Pleroma == nil || len(a.Pleroma.Relationship.ID) < 1 {
+			ids = append(ids, a.ID)
+		}
+	}
+	if len(ids) < 1 {
+		return accounts, nil
+	}
+	rs, err := c.GetAccountRelationships(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+	rsm := make(map[string]*Relationship, len(rs))
+	for _, r := range rs {
+		rsm[r.ID] = r
+	}
+	for _, a := range accounts {
+		a.Pleroma = &AccountPleroma{rsm[a.ID]}
+	}
+	return accounts, nil
+}
+
 // GetAccountFollowers return followers list.
 func (c *Client) GetAccountFollowers(ctx context.Context, id string, pg *Pagination) ([]*Account, error) {
 	var accounts []*Account
-	err := c.doAPI(ctx, http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/followers", url.PathEscape(string(id))), nil, &accounts, pg)
+	params := url.Values{}
+	params.Set("with_relationships", strconv.FormatBool(true))
+	err := c.doAPI(ctx, http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/followers", url.PathEscape(string(id))), params, &accounts, pg)
+	if err != nil {
+		return nil, err
+	}
+	accounts, err = c.getMissingRelationships(ctx, accounts)
 	if err != nil {
 		return nil, err
 	}
@@ -234,7 +264,13 @@ func (c *Client) GetAccountFollowers(ctx context.Context, id string, pg *Paginat
 // GetAccountFollowing return following list.
 func (c *Client) GetAccountFollowing(ctx context.Context, id string, pg *Pagination) ([]*Account, error) {
 	var accounts []*Account
-	err := c.doAPI(ctx, http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/following", url.PathEscape(string(id))), nil, &accounts, pg)
+	params := url.Values{}
+	params.Set("with_relationships", strconv.FormatBool(true))
+	err := c.doAPI(ctx, http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/following", url.PathEscape(string(id))), params, &accounts, pg)
+	if err != nil {
+		return nil, err
+	}
+	accounts, err = c.getMissingRelationships(ctx, accounts)
 	if err != nil {
 		return nil, err
 	}

@@ -16,7 +16,7 @@
 				source
 			</a>
 		</div>
-		{{if not .IsCurrent}}
+		{{if (ne $.Ctx.UserID .User.ID)}}
 		<div>
 			<span> {{if .User.Pleroma.Relationship.FollowedBy}} follows you - {{end}} </span>  
 			{{if .User.Pleroma.Relationship.BlockedBy}} blocks you - {{end}}
@@ -104,7 +104,7 @@
 			<a href="/user/{{.User.ID}}/followers">followers ({{.User.FollowersCount}})</a> -
 			<a href="/user/{{.User.ID}}/media">media</a>
 		</div>
-		{{if .IsCurrent}}
+		{{if (eq $.Ctx.UserID .User.ID)}}
 		<div>
 			<a href="/user/{{.User.ID}}/bookmarks">bookmarks</a>
 			- <a href="/user/{{.User.ID}}/likes">likes</a>
@@ -115,7 +115,7 @@
 		{{end}}
 		<div>
 			<a href="/usersearch/{{.User.ID}}">search statuses</a>
-			{{if .IsCurrent}} - <a href="/filters">filters</a> {{end}}
+			{{if (eq $.Ctx.UserID .User.ID)}} - <a href="/filters">filters</a> {{end}}
 		</div>
 	</div>
 	<div class="user-profile-description">
@@ -140,11 +140,11 @@
 
 {{else if eq .Type "following"}}
 <h1>Following</h1>
-{{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
+{{template "userlistfollow.tmpl" (WithContext .Users $.Ctx)}}
 
 {{else if eq .Type "followers"}}
 <h1>Followers</h1>
-{{template "userlist.tmpl" (WithContext .Users $.Ctx)}}
+{{template "userlistfollow.tmpl" (WithContext .Users $.Ctx)}}
 
 {{else if eq .Type "media"}}
 <h1>Statuses with media</h1>

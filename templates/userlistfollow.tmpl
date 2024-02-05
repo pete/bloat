@@ -1,0 +1,30 @@
+{{with .Data}}
+{{if .}}
+<table>
+{{range .}}
+	<tr>
+		<td> {{template "userlistitem.tmpl" (WithContext . $.Ctx)}} </td>
+		<td>
+			{{if (ne $.Ctx.UserID .ID)}}
+				{{if .Pleroma.Relationship.Following}}
+				<form class="user-list-action" action="/unfollow/{{.ID}}" method="POST">
+					<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+					<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
+					<button type="submit">Unfollow</button>
+				</form>
+				{{else}}
+				<form class="user-list-action" action="/follow/{{.ID}}" method="POST">
+					<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
+					<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
+					<button type="submit">Follow</button>
+				</form>
+				{{end}}
+			{{end}}
+		</td>
+	</tr>
+{{end}}
+</table>
+{{else}}
+<p>No data found</p>
+{{end}}
+{{end}}
