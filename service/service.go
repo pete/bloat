@@ -427,6 +427,8 @@ func (s *service) NotificationPage(c *client, maxID string,
 		excludes = []string{"follow", "favourite", "reblog"}
 	}
 
+	excludes = append(excludes, "pleroma:emoji_reaction")
+
 	notifications, err := c.GetNotifications(ctx, &pg, excludes)
 	if err != nil {
 		return
