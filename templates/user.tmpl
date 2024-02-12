@@ -149,7 +149,7 @@
 {{template "userlistfollow.tmpl" (WithContext .Users $.Ctx)}}
 
 {{else if eq .Type "media"}}
-<h1>Statuses with media</h1>
+<h1>Statuses With Media</h1>
 {{range .Statuses}}
 {{template "status.tmpl" (WithContext . $.Ctx)}}
 {{else}}
@@ -215,7 +215,7 @@
 {{end}}
 
 {{else if eq .Type "requests"}}
-<h1>Follow requests</h1>
+<h1>Follow Requests</h1>
 {{template "requestlist.tmpl" (WithContext .Users $.Ctx)}}
 {{end}}
 

@@ -47,8 +47,13 @@ func NewService(cname string, cscope string, cwebsite string,
 
 func (s *service) cdata(c *client, title string, count int, rinterval int,
 	target string) (data *renderer.CommonData) {
+	if title == "" {
+		title = s.cname
+	} else {
+		title += " - " + s.cname
+	}
 	data = &renderer.CommonData{
-		Title:           title + " - " + s.cname,
+		Title:           title,
 		CustomCSS:       s.css,
 		Count:           count,
 		RefreshInterval: rinterval,
@@ -56,6 +61,7 @@ func (s *service) cdata(c *client, title string, count int, rinterval int,
 	}
 	if c != nil && c.s.IsLoggedIn() {
 		data.CSRFToken = c.s.CSRFToken
+		data.Title += " - " + c.s.Instance
 	}
 	return
 }
@@ -81,7 +87,7 @@ func (s *service) ErrorPage(c *client, err error, retry bool) error {
 }
 
 func (s *service) SigninPage(c *client) (err error) {
-	cdata := s.cdata(nil, "signin", 0, 0, "")
+	cdata := s.cdata(nil, "Signin", 0, 0, "")
 	data := &renderer.SigninData{
 		CommonData: cdata,
 	}
@@ -89,8 +95,9 @@ func (s *service) SigninPage(c *client) (err error) {
 }
 
 func (s *service) RootPage(c *client) (err error) {
+	cdata := s.cdata(c, "", 0, 0, "")
 	data := &renderer.RootData{
-		Title: s.cname,
+		CommonData: cdata,
 	}
 	return s.renderer.Render(c.rctx, c.w, renderer.RootPage, data)
 }
@@ -105,7 +112,7 @@ func (s *service) NavPage(c *client) (err error) {
 		DefaultFormat:     c.s.Settings.DefaultFormat,
 		Formats:           s.postFormats,
 	}
-	cdata := s.cdata(c, "nav", 0, 0, "main")
+	cdata := s.cdata(c, "Nav", 0, 0, "main")
 	data := &renderer.NavData{
 		User:        u,
 		CommonData:  cdata,
@@ -202,7 +209,7 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 		nextLink = "/timeline/" + tType + "?" + v.Encode()
 	}
 
-	cdata := s.cdata(c, tType+" timeline ", 0, 0, "")
+	cdata := s.cdata(c, title, 0, 0, "")
 	data := &renderer.TimelineData{
 		Title:      title,
 		Type:       tType,
@@ -355,7 +362,7 @@ func (s *service) ThreadPage(c *client, id string, reply bool) (err error) {
 		addToReplyMap(replies, statuses[i].InReplyToID, statuses[i].ID, i+1)
 	}
 
-	cdata := s.cdata(c, "post by "+status.Account.DisplayName, 0, 0, "")
+	cdata := s.cdata(c, "Post by "+status.Account.DisplayName, 0, 0, "")
 	data := &renderer.ThreadData{
 		Statuses:    statuses,
 		PostContext: pctx,
@@ -411,7 +418,7 @@ func (s *service) QuickReplyPage(c *client, id string) (err error) {
 		},
 	}
 
-	cdata := s.cdata(c, "post by "+status.Account.DisplayName, 0, 0, "")
+	cdata := s.cdata(c, "Post by "+status.Account.DisplayName, 0, 0, "")
 	data := &renderer.QuickReplyData{
 		Ancestor:    ancestor,
 		Status:      status,
@@ -426,7 +433,7 @@ func (s *service) LikedByPage(c *client, id string) (err error) {
 	if err != nil {
 		return
 	}
-	cdata := s.cdata(c, "likes", 0, 0, "")
+	cdata := s.cdata(c, "Likes", 0, 0, "")
 	data := &renderer.LikedByData{
 		CommonData: cdata,
 		Users:      likers,
@@ -439,7 +446,7 @@ func (s *service) RetweetedByPage(c *client, id string) (err error) {
 	if err != nil {
 		return
 	}
-	cdata := s.cdata(c, "retweets", 0, 0, "")
+	cdata := s.cdata(c, "Retweets", 0, 0, "")
 	data := &renderer.RetweetedByData{
 		CommonData: cdata,
 		Users:      retweeters,
@@ -488,7 +495,7 @@ func (s *service) NotificationPage(c *client, maxID string,
 		nextLink = "/notifications?max_id=" + pg.MaxID
 	}
 
-	cdata := s.cdata(c, "notifications", unreadCount,
+	cdata := s.cdata(c, "Notifications", unreadCount,
 		c.s.Settings.NotificationInterval, "main")
 	data := &renderer.NotificationData{
 		Notifications: notifications,
@@ -648,7 +655,7 @@ func (s *service) UserSearchPage(c *client,
 	id string, q string, offset int) (err error) {
 
 	var nextLink string
-	var title = "search"
+	var title = "Search"
 
 	user, err := c.GetAccount(c.ctx, id)
 	if err != nil {
@@ -700,7 +707,7 @@ func (s *service) MutePage(c *client, id string) (err error) {
 }
 
 func (s *service) AboutPage(c *client) (err error) {
-	cdata := s.cdata(c, "about", 0, 0, "")
+	cdata := s.cdata(c, "About", 0, 0, "")
 	data := &renderer.AboutData{
 		CommonData: cdata,
 	}
@@ -712,7 +719,7 @@ func (s *service) EmojiPage(c *client) (err error) {
 	if err != nil {
 		return
 	}
-	cdata := s.cdata(c, "emojis", 0, 0, "")
+	cdata := s.cdata(c, "Emojis", 0, 0, "")
 	data := &renderer.EmojiData{
 		Emojis:     emojis,
 		CommonData: cdata,
@@ -724,7 +731,7 @@ func (s *service) SearchPage(c *client,
 	q string, qType string, offset int) (err error) {
 
 	var nextLink string
-	var title = "search"
+	var title = "Search"
 
 	var results *mastodon.Results
 	if len(q) > 0 {
@@ -760,7 +767,7 @@ func (s *service) SearchPage(c *client,
 }
 
 func (s *service) SettingsPage(c *client) (err error) {
-	cdata := s.cdata(c, "settings", 0, 0, "")
+	cdata := s.cdata(c, "Settings", 0, 0, "")
 	data := &renderer.SettingsData{
 		CommonData:  cdata,
 		Settings:    &c.s.Settings,
@@ -774,7 +781,7 @@ func (svc *service) FiltersPage(c *client) (err error) {
 	if err != nil {
 		return
 	}
-	cdata := svc.cdata(c, "filters", 0, 0, "")
+	cdata := svc.cdata(c, "Filters", 0, 0, "")
 	data := &renderer.FiltersData{
 		CommonData: cdata,
 		Filters:    filters,
@@ -795,7 +802,7 @@ func (svc *service) ProfilePage(c *client) (err error) {
 	for len(*u.Source.Fields) < 4 {
 		*u.Source.Fields = append(*u.Source.Fields, mastodon.Field{})
 	}
-	cdata := svc.cdata(c, "edit profile", 0, 0, "")
+	cdata := svc.cdata(c, "Edit profile", 0, 0, "")
 	data := &renderer.ProfileData{
 		CommonData: cdata,
 		User:       u,

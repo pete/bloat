@@ -49,7 +49,7 @@ type SigninData struct {
 }
 
 type RootData struct {
-	Title string
+	*CommonData
 }
 
 type TimelineData struct {
