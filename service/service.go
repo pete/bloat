@@ -511,12 +511,19 @@ func (s *service) UserPage(c *client, id string, pageType string,
 		MinID: minID,
 		Limit: 20,
 	}
+	isCurrent := c.s.UserID == id
 
-	user, err := c.GetAccount(c.ctx, id)
+	// Some fields like AccountSource are only available in the
+	// CurrentUser API
+	var user *mastodon.Account
+	if isCurrent {
+		user, err = c.GetAccountCurrentUser(c.ctx)
+	} else {
+		user, err = c.GetAccount(c.ctx, id)
+	}
 	if err != nil {
 		return
 	}
-	isCurrent := c.s.UserID == user.ID
 
 	switch pageType {
 	case "":

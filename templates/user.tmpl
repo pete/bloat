@@ -110,7 +110,9 @@
 			- <a href="/user/{{.User.ID}}/likes">likes</a>
 			- <a href="/user/{{.User.ID}}/mutes">mutes</a>
 			- <a href="/user/{{.User.ID}}/blocks">blocks</a>
-			{{if .User.Locked}}- <a href="/user/{{.User.ID}}/requests">requests</a>{{end}}
+			{{if .User.Locked}}- <a href="/user/{{.User.ID}}/requests">requests (
+				{{- if .User.FollowRequestsCount}}{{.User.FollowRequestsCount}}{{else}}{{.User.Source.FollowRequestsCount}}{{end -}}
+			)</a>{{end}}
 		</div>
 		{{end}}
 		<div>

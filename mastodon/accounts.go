@@ -40,6 +40,9 @@ type Account struct {
 	Bot            bool            `json:"bot"`
 	Source         *AccountSource  `json:"source"`
 	Pleroma        *AccountPleroma `json:"pleroma"`
+
+	// Duplicate field for compatibilty with Pleroma
+	FollowRequestsCount int64 `json:"follow_requests_count"`
 }
 
 // Field is a Mastodon account profile field.
@@ -51,11 +54,12 @@ type Field struct {
 
 // AccountSource is a Mastodon account profile field.
 type AccountSource struct {
-	Privacy   *string  `json:"privacy"`
-	Sensitive *bool    `json:"sensitive"`
-	Language  *string  `json:"language"`
-	Note      *string  `json:"note"`
-	Fields    *[]Field `json:"fields"`
+	Privacy             *string  `json:"privacy"`
+	Sensitive           *bool    `json:"sensitive"`
+	Language            *string  `json:"language"`
+	Note                *string  `json:"note"`
+	Fields              *[]Field `json:"fields"`
+	FollowRequestsCount int64    `json:"follow_requests_count"`
 }
 
 // GetAccount return Account.
