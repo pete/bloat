@@ -65,7 +65,13 @@ func (c *Client) doAPI(ctx context.Context, method string, uri string, params in
 
 		var buf bytes.Buffer
 		mw := multipart.NewWriter(&buf)
-		part, err := mw.CreateFormFile("file", filepath.Base(file))
+		fname :=  filepath.Base(file)
+		err = mw.WriteField("description", fname)
+		if err != nil {
+			mw.Close()
+			return err
+		}
+		part, err := mw.CreateFormFile("file", fname)
 		if err != nil {
 			return err
 		}
@@ -91,7 +97,13 @@ func (c *Client) doAPI(ctx context.Context, method string, uri string, params in
 
 		var buf bytes.Buffer
 		mw := multipart.NewWriter(&buf)
-		part, err := mw.CreateFormFile("file", filepath.Base(file.Filename))
+		fname := filepath.Base(file.Filename)
+		err = mw.WriteField("description", fname)
+		if err != nil {
+			mw.Close()
+			return err
+		}
+		part, err := mw.CreateFormFile("file", fname)
 		if err != nil {
 			return err
 		}
