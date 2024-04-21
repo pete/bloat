@@ -277,7 +277,7 @@ func (s *service) ListPage(c *client, id string, q string) (err error) {
 	}
 	var searchAccounts []*mastodon.Account
 	if len(q) > 0 {
-		result, err := c.Search(c.ctx, q, "accounts", 20, true, 0, id, true)
+		result, err := c.Search(c.ctx, q, "accounts", 20, true, 0, id, false)
 		if err != nil {
 			return err
 		}
