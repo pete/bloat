@@ -1076,7 +1076,7 @@ func (s *service) UnBookmark(c *client, id string) (err error) {
 
 func (svc *service) Filter(c *client, phrase string, wholeWord bool) (err error) {
 	fctx := []string{"home", "notifications", "public", "thread"}
-	return c.AddFilter(c.ctx, phrase, fctx, true, wholeWord, nil)
+	return c.AddFilter(c.ctx, phrase, fctx, false, wholeWord, nil)
 }
 
 func (svc *service) UnFilter(c *client, id string) (err error) {
