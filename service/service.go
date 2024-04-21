@@ -131,6 +131,7 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 		MinID: minID,
 		Limit: 20,
 	}
+	var refreshLink = "/timeline/" + tType
 
 	switch tType {
 	default:
@@ -159,6 +160,7 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 			if err != nil {
 				return err
 			}
+			refreshLink += "?instance=" + instance
 		}
 		title = "Remote Timeline"
 	case "twkn":
@@ -177,6 +179,7 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 			return err
 		}
 		title = "List Timeline - " + list.Title
+		refreshLink += "?list=" + listId
 	}
 
 	for i := range statuses {
@@ -211,13 +214,14 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 
 	cdata := s.cdata(c, title, 0, 0, "")
 	data := &renderer.TimelineData{
-		Title:      title,
-		Type:       tType,
-		Instance:   instance,
-		Statuses:   statuses,
-		NextLink:   nextLink,
-		PrevLink:   prevLink,
-		CommonData: cdata,
+		Title:       title,
+		Type:        tType,
+		Instance:    instance,
+		Statuses:    statuses,
+		NextLink:    nextLink,
+		PrevLink:    prevLink,
+		RefreshLink: refreshLink,
+		CommonData:  cdata,
 	}
 	return s.renderer.Render(c.rctx, c.w, renderer.TimelinePage, data)
 }

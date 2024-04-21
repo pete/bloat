@@ -1,6 +1,6 @@
 {{with .Data}}
 {{template "header.tmpl" (WithContext .CommonData $.Ctx)}}
-<h1>{{.Title}} <a class="page-link" href="{{$.Ctx.Referrer}}" accesskey="T" title="Refresh (T)">refresh</a></h1>
+<h1>{{.Title}} <a class="page-link" href="{{.RefreshLink}}" accesskey="T" title="Refresh (T)">refresh</a></h1>
 
 {{if eq .Type "remote"}}
 <form action="/timeline/remote" method="GET">
