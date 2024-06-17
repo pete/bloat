@@ -5,8 +5,18 @@
 {{if eq .Type "remote"}}
 <form action="/timeline/remote" method="GET">
 	<span>
-		<label for="instance"> Instance </label>
-		<input type="text" id="instance" name="instance" value="{{.Instance}}">
+		<label for="q"> Instance </label>
+		<input type="text" id="q" name="q" value="{{.Q}}">
+	</span>
+	<button type="submit"> Submit </button>
+</form>
+{{end}}
+
+{{if eq .Type "hashtag"}}
+<form action="/timeline/hashtag" method="GET">
+	<span>
+		<label for="q"> Tag </label>
+		<input type="text" id="q" name="q" value="{{.Q}}">
 	</span>
 	<button type="submit"> Submit </button>
 </form>

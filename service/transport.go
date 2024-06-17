@@ -134,11 +134,11 @@ func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 	timelinePage := handle(func(c *client) error {
 		tType, _ := mux.Vars(c.r)["type"]
 		q := c.r.URL.Query()
-		instance := q.Get("instance")
+		query := q.Get("q")
 		list := q.Get("list")
 		maxID := q.Get("max_id")
 		minID := q.Get("min_id")
-		return s.TimelinePage(c, tType, instance, list, maxID, minID)
+		return s.TimelinePage(c, tType, query, list, maxID, minID)
 	}, SESSION, HTML)
 
 	defaultTimelinePage := handle(func(c *client) error {
@@ -210,7 +210,14 @@ func NewHandler(s *service, verbose bool, staticDir string) http.Handler {
 		sq := q.Get("q")
 		qType := q.Get("type")
 		offset, _ := strconv.Atoi(q.Get("offset"))
-		return s.SearchPage(c, sq, qType, offset)
+		rurl, err := s.SearchPage(c, sq, qType, offset)
+		if err != nil {
+			return err
+		}
+		if len(rurl) > 0 {
+			c.redirect(rurl)
+		}
+		return nil
 	}, SESSION, HTML)
 
 	settingsPage := handle(func(c *client) error {

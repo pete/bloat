@@ -121,7 +121,7 @@ func (s *service) NavPage(c *client) (err error) {
 	return s.renderer.Render(c.rctx, c.w, renderer.NavPage, data)
 }
 
-func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
+func (s *service) TimelinePage(c *client, tType, q, listId, maxID,
 	minID string) (err error) {
 
 	var nextLink, prevLink, title string
@@ -155,12 +155,12 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 		}
 		title = "Local Timeline"
 	case "remote":
-		if len(instance) > 0 {
-			statuses, err = c.GetTimelinePublic(c.ctx, false, instance, &pg)
+		if len(q) > 0 {
+			statuses, err = c.GetTimelinePublic(c.ctx, false, q, &pg)
 			if err != nil {
 				return err
 			}
-			refreshLink += "?instance=" + instance
+			refreshLink += "?q=" + q
 		}
 		title = "Remote Timeline"
 	case "twkn":
@@ -180,6 +180,16 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 		}
 		title = "List Timeline - " + list.Title
 		refreshLink += "?list=" + listId
+	case "hashtag":
+		q = strings.TrimPrefix(q, "#")
+		if len(q) > 0 {
+			statuses, err = c.GetTimelineHashtag(c.ctx, q, false, &pg)
+			if err != nil {
+				return err
+			}
+			refreshLink += "?q=" + q
+		}
+		title = "Hashtag Timeline"
 	}
 
 	for i := range statuses {
@@ -191,8 +201,8 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 	if (len(maxID) > 0 || len(minID) > 0) && len(statuses) > 0 {
 		v := make(url.Values)
 		v.Set("min_id", statuses[0].ID)
-		if len(instance) > 0 {
-			v.Set("instance", instance)
+		if len(q) > 0 {
+			v.Set("q", q)
 		}
 		if len(listId) > 0 {
 			v.Set("list", listId)
@@ -203,8 +213,8 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 	if len(minID) > 0 || (len(pg.MaxID) > 0 && len(statuses) == 20) {
 		v := make(url.Values)
 		v.Set("max_id", pg.MaxID)
-		if len(instance) > 0 {
-			v.Set("instance", instance)
+		if len(q) > 0 {
+			v.Set("q", q)
 		}
 		if len(listId) > 0 {
 			v.Set("list", listId)
@@ -216,7 +226,7 @@ func (s *service) TimelinePage(c *client, tType, instance, listId, maxID,
 	data := &renderer.TimelineData{
 		Title:       title,
 		Type:        tType,
-		Instance:    instance,
+		Q:           q,
 		Statuses:    statuses,
 		NextLink:    nextLink,
 		PrevLink:    prevLink,
@@ -731,17 +741,21 @@ func (s *service) EmojiPage(c *client) (err error) {
 	return s.renderer.Render(c.rctx, c.w, renderer.EmojiPage, data)
 }
 
-func (s *service) SearchPage(c *client,
-	q string, qType string, offset int) (err error) {
+func (s *service) SearchPage(c *client, q string, qType string, offset int) (
+	rurl string, err error) {
 
 	var nextLink string
 	var title = "Search"
 
 	var results *mastodon.Results
 	if len(q) > 0 {
+		if qType == "hashtags" {
+			rurl = "/timeline/hashtag?q=" + url.QueryEscape(q)
+			return
+		}
 		results, err = c.Search(c.ctx, q, qType, 20, true, offset, "", false)
 		if err != nil {
-			return err
+			return "", err
 		}
 	} else {
 		results = &mastodon.Results{}
@@ -767,7 +781,7 @@ func (s *service) SearchPage(c *client,
 		Statuses:   results.Statuses,
 		NextLink:   nextLink,
 	}
-	return s.renderer.Render(c.rctx, c.w, renderer.SearchPage, data)
+	return "", s.renderer.Render(c.rctx, c.w, renderer.SearchPage, data)
 }
 
 func (s *service) SettingsPage(c *client) (err error) {
