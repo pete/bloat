@@ -192,9 +192,12 @@ textarea {
 	opacity: 0.6;
 }
 
-.notification-container.mention .status-content,
-.notification-container.mention .status-reply-container,
-.notification-container.mention .status-media-container {
+.notification-container.notification-mention .status-content,
+.notification-container.notification-mention .status-reply-container,
+.notification-container.notification-mention .status-media-container,
+.notification-container.notification-status .status-content,
+.notification-container.notification-status .status-reply-container,
+.notification-container.notification-status .status-media-container {
 	opacity: 1;
 }
 

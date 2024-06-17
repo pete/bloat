@@ -16,7 +16,7 @@
 </form>
 
 {{range .Notifications}}
-<article class="notification-container {{.Type}} {{if .Pleroma}}{{if not .Pleroma.IsSeen}}unread{{end}}{{end}}">
+<article class="notification-container notification-{{.Type}} {{if .Pleroma}}{{if not .Pleroma.IsSeen}}unread{{end}}{{end}}">
 	{{if eq .Type "follow"}}
 	<div class="user-list-item">
 		<div class="user-list-profile-img">
@@ -64,6 +64,9 @@
 	</div>
 
 	{{else if eq .Type "mention"}}
+	{{template "status" (WithContext .Status $.Ctx)}}
+
+	{{else if eq .Type "status"}}
 	{{template "status" (WithContext .Status $.Ctx)}}
 
 	{{else if eq .Type "reblog"}}
