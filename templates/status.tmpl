@@ -177,6 +177,13 @@
 				</div>
 			</form>
 			{{end}}
+			{{with $quote := GetQuote .}}
+				{{if $quote}}
+				<div class="status-quote">
+					{{template "status" (WithContext $quote $.Ctx)}}
+				</div>
+				{{end}}
+			{{end}}
 			<div class="status-action-container"> 
 				<div class="status-action">
 					<a href="/thread/{{.ID}}?reply=true#status-{{.ID}}">reply</a>

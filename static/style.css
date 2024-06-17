@@ -55,6 +55,13 @@ body,
 	position: relative;
 }
 
+.status-quote {
+	margin: 4px 0;
+	padding: 8px;
+	background-color: #e6e6e6;
+	background-color: #dadada99;
+}
+
 .status-content {
 	margin: 4px 0;
 	max-height: 600px;
@@ -583,6 +590,11 @@ input:disabled::file-selector-button {
 .dark .status-container-container.highlight {
 	background-color: #222222;
 	background-color: #2f2f2f99;
+}
+
+.dark .status-quote {
+	background-color: #202020;
+	background-color: #26262699;
 }
 
 .dark #reply-popup,

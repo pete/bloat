@@ -13,7 +13,10 @@ import (
 )
 
 type StatusPleroma struct {
-	InReplyToAccountAcct string `json:"in_reply_to_account_acct"`
+	InReplyToAccountAcct string  `json:"in_reply_to_account_acct"`
+	Quote                *Status `json:"quote"`
+	QuoteID              string  `json:"quote_id"`
+	QuoteVisible         bool    `json:"quote_visible"`
 }
 
 type ReplyInfo struct {

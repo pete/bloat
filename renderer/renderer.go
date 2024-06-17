@@ -68,6 +68,17 @@ func statusContentFilter(content string, emojis []mastodon.Emoji, mentions []mas
 	return strings.NewReplacer(replacements...).Replace(content)
 }
 
+func getQuote(s *mastodon.Status) *mastodon.Status {
+	if s.Pleroma.Quote == nil || !s.Pleroma.QuoteVisible {
+		return nil
+	}
+	q := s.Pleroma.Quote
+	q.RetweetedByID = s.ID
+	// Disable nested quotes
+	q.Pleroma.QuoteVisible = false
+	return q
+}
+
 func displayInteractionCount(c int64) string {
 	if c > 0 {
 		return strconv.Itoa(int(c))
@@ -145,6 +156,7 @@ func NewRenderer(templateGlobPattern string) (r *renderer, err error) {
 	t, err = t.Funcs(template.FuncMap{
 		"EmojiFilter":             emojiFilter,
 		"StatusContentFilter":     statusContentFilter,
+		"GetQuote":                getQuote,
 		"DisplayInteractionCount": displayInteractionCount,
 		"TimeSince":               timeSince,
 		"TimeUntil":               timeUntil,
