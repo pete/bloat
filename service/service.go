@@ -160,7 +160,7 @@ func (s *service) TimelinePage(c *client, tType, q, listId, maxID,
 			if err != nil {
 				return err
 			}
-			refreshLink += "?q=" + q
+			refreshLink += "?q=" + url.QueryEscape(q)
 		}
 		title = "Remote Timeline"
 	case "twkn":
@@ -187,7 +187,7 @@ func (s *service) TimelinePage(c *client, tType, q, listId, maxID,
 			if err != nil {
 				return err
 			}
-			refreshLink += "?q=" + q
+			refreshLink += "?q=" + url.QueryEscape(q)
 		}
 		title = "Hashtag Timeline"
 	}
@@ -689,7 +689,7 @@ func (s *service) UserSearchPage(c *client,
 	if len(results.Statuses) == 20 {
 		offset += 20
 		nextLink = fmt.Sprintf("/usersearch/%s?q=%s&offset=%d", id,
-			q, offset)
+			url.QueryEscape(q), offset)
 	}
 
 	if len(q) > 0 {
@@ -765,7 +765,7 @@ func (s *service) SearchPage(c *client, q string, qType string, offset int) (
 		(qType == "statuses" && len(results.Statuses) == 20) {
 		offset += 20
 		nextLink = fmt.Sprintf("/search?q=%s&type=%s&offset=%d",
-			q, qType, offset)
+			url.QueryEscape(q), qType, offset)
 	}
 
 	if len(q) > 0 {
