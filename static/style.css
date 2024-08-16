@@ -638,6 +638,7 @@ kbd {
 	background-color: rgba(34, 34, 34, 0.8);
 }
 
+// TODO:  This should probably be moved to the static custom CSS:
 .status-color-00 { background-color: rgba(  0,   0,   0, 0.1); }
 .status-color-01 { background-color: rgba( 17, 127,   0, 0.1); }
 .status-color-02 { background-color: rgba( 34, 254,   0, 0.1); }
