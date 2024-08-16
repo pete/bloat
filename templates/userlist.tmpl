@@ -1,7 +1,7 @@
 {{with .Data}}
 <div>
 	{{range .}}
-	<div class="user-list-item">
+	<div class="user-list-item {{(StatusColor .Acct)}}">
 		<div class="user-list-profile-img">
 			<a class="img-link" href="/user/{{.ID}}">
 				<img class="status-profile-img" src="{{.AvatarStatic}}" title="@{{.Acct}}" alt="avatar" height="48" />
