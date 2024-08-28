@@ -280,7 +280,7 @@ body {
    appear to be a way to express this with a nonce, so I made a fake
    background.
 */
-.user-profile-background { position: absolute; top: 0; left: 0; overflow: hidden; height: 30em; width: 100%; opacity: 0.5; z-index: -1; }
+.user-profile-background { position: absolute; top: 0; left: 0; height: 30em; width: 100%; opacity: 0.75; z-index: -1; }
 .user-profile-background img { position: absolute; top: 0; left: 0; width: 100%; height: auto; }
 
 
