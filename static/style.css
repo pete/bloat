@@ -267,6 +267,7 @@ body {
 .user-info-container > * {
 	padding: 0.25em;
 	background-color: rgba(210, 210, 210, 0.8);
+	position: relative;
 }
 
 .user-profile-img-container {
@@ -274,6 +275,14 @@ body {
 	margin: 0 4px 4px 0;
 	padding: 1em;
 }
+
+/* The hoop-jumping is due to CSP disliking inline styles; there doesn't
+   appear to be a way to express this with a nonce, so I made a fake
+   background.
+*/
+.user-profile-background { position: absolute; top: 0; left: 0; overflow: hidden; height: 30em; width: 100%; opacity: 0.5; }
+.user-profile-background img { position: absolute; top: 0; left: 0; width: 100%; height: auto; }
+
 
 .user-profile-details-container {
 	display: inline-block;
