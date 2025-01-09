@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+	"encoding/json"
 )
 
 type StatusPleroma struct {
@@ -17,6 +18,21 @@ type StatusPleroma struct {
 type ReplyInfo struct {
 	ID     string `json:"id"`
 	Number int    `json:"number"`
+}
+
+type UTime time.Time // "Unreliable Time"
+func (t *UTime) UnmarshalJSON(b []byte) error {
+	var tm time.Time
+	err := json.Unmarshal(b, &tm)
+	if err != nil {
+		return nil
+	}
+	*t = UTime(tm)
+	return nil
+}
+func (t UTime) MarshalJSON() ([]byte, error) {
+	tm := time.Time(t)
+	return json.Marshal(tm)
 }
 
 // Status is struct to hold status.
@@ -29,7 +45,7 @@ type Status struct {
 	InReplyToAccountID interface{}  `json:"in_reply_to_account_id"`
 	Reblog             *Status      `json:"reblog"`
 	Content            string       `json:"content"`
-	CreatedAt          time.Time    `json:"created_at"`
+	UCreatedAt          UTime    `json:"created_at,omitempty"`
 	Emojis             []Emoji      `json:"emojis"`
 	RepliesCount       int64        `json:"replies_count"`
 	ReblogsCount       int64        `json:"reblogs_count"`
@@ -56,6 +72,10 @@ type Status struct {
 	IDReplies     map[string][]ReplyInfo `json:"id_replies"`
 	IDNumbers     map[string]int         `json:"id_numbers"`
 	RetweetedByID string                 `json:"retweeted_by_id"`
+}
+
+func (s *Status) CreatedAt() time.Time {
+	return time.Time(s.UCreatedAt)
 }
 
 // Context hold information for mastodon context.
