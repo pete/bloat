@@ -203,7 +203,7 @@ func (s *service) TimelinePage(c *client, tType string,
 		title = "The Whole Known Network"
 	}
 	if err != nil {
-		return err
+		return fmt.Errorf("TimelinePage tType:%s:  %w", tType, err)
 	}
 
 	for i := range statuses {
