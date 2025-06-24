@@ -32,7 +32,11 @@ body {
 }
 
 .status-content p {
-	margin: 0px;
+	/* margin: 0px;
+	  I don't know why ↑this↑ was set, but it was turning a lot of
+	  posts into textwalls.  I was highlighting paragraphs just to
+	  see where they were while reading.
+	*/
 }
 
 .status-content img,
