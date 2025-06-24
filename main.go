@@ -33,7 +33,7 @@ func setupHttp() {
 	tr.MaxIdleConns = 300
 	tr.ForceAttemptHTTP2 = false
 	tr.DialContext = (&net.Dialer{
-		Timeout:   30 * time.Second,
+		Timeout:   60 * time.Second,
 		KeepAlive: 3 * time.Minute,
 		DualStack: true,
 	}).DialContext
