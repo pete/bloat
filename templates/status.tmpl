@@ -45,13 +45,13 @@
 						<form action="/unmuteconv/{{.ID}}" method="post" target="_self">
 							<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 							<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
-							<input type="submit" value="unmute" class="btn-link more-link">
+							<input type="submit" value="bump" class="btn-link more-link">
 						</form>
 						{{else}}
 						<form action="/muteconv/{{.ID}}" method="post" target="_self">
 							<input type="hidden" name="csrf_token" value="{{$.Ctx.CSRFToken}}">
 							<input type="hidden" name="referrer" value="{{$.Ctx.Referrer}}">
-							<input type="submit" value="mute" class="btn-link more-link">
+							<input type="submit" value="sage" class="btn-link more-link">
 						</form>
 						{{end}}
 						{{if .Bookmarked}}
